@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
+import './mobile.css';
 
 type Cliente = { id: string; nome: string; telefone: string; cep: string; rua: string; numero: string; bairro: string; cidade: string; estado: string; complemento: string; observacoes: string };
 type Produto = { id: string; nome: string; unidade: string; preco: number; ativo: boolean };
