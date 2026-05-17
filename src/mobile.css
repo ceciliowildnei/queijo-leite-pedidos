@@ -180,3 +180,31 @@
     font-size: 30px !important;
   }
 }
+
+/* Correção do logo oficial: força o PNG e impede o sumiço no celular. */
+.brand-logo,
+.login-card img,
+.public-card img {
+  content: url('/logo-queijos-wr.png') !important;
+  object-fit: contain !important;
+}
+
+.login-card img {
+  display: block !important;
+  width: 320px !important;
+  max-width: 82vw !important;
+  height: auto !important;
+  margin: 0 auto 20px !important;
+}
+
+.public-card img {
+  display: block !important;
+  width: 320px !important;
+  max-width: 82vw !important;
+  height: auto !important;
+  margin: 0 auto 12px !important;
+}
+
+.login-page::before {
+  display: none !important;
+}
