@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#f8d97a"/><stop offset="1" stop-color="#b36a13"/></linearGradient>
+    <linearGradient id="r" x1="0" x2="1"><stop stop-color="#063d20"/><stop offset="1" stop-color="#0d6b3a"/></linearGradient>
+    <filter id="s"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-opacity=".28"/></filter>
+  </defs>
+  <rect width="900" height="620" fill="none"/>
+  <g filter="url(#s)">
+    <path d="M165 420h570l55 45-55 45H165l-55-45z" fill="url(#g)" stroke="#673a0d" stroke-width="8"/>
+    <path d="M145 220c55-135 235-185 380-155 108 22 191 84 225 169 44 3 79 40 79 84 0 47-38 85-85 85H155c-47 0-85-38-85-85 0-52 45-92 75-98z" fill="#fff3cf" stroke="#7b3f0e" stroke-width="10"/>
+    <path d="M285 252h295v118H285z" fill="#f7d77a" stroke="#7b3f0e" stroke-width="7"/>
+    <path d="M260 254l175-122 175 122z" fill="#c65419" stroke="#7b3f0e" stroke-width="7"/>
+    <rect x="415" y="294" width="46" height="76" rx="12" fill="#6b3b18"/>
+    <circle cx="355" cy="332" r="50" fill="#ffe39b" stroke="#b57a1f" stroke-width="6"/>
+    <path d="M586 326c55-22 107-4 132 30-32 37-91 48-145 20z" fill="#ffe9a8" stroke="#b57a1f" stroke-width="7"/>
+    <path d="M90 350c160-50 560-50 720 0v110c-180-48-540-48-720 0z" fill="url(#r)" stroke="#062c1d" stroke-width="9"/>
+    <text x="450" y="425" text-anchor="middle" font-size="92" font-family="Georgia, serif" font-weight="800" fill="#fff7df" stroke="#062c1d" stroke-width="2">Queijos WR</text>
+    <path d="M180 466c160 34 380 34 540 0v70c-160 44-380 44-540 0z" fill="#7c3f13" stroke="#f0b23b" stroke-width="7"/>
+    <text x="450" y="522" text-anchor="middle" font-size="39" font-family="Georgia, serif" font-weight="700" fill="#fffaf0">SABOR E TRADIÇÃO DE FAMÍLIA</text>
+  </g>
+</svg>
