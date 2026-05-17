@@ -1,0 +1,182 @@
+@media (max-width: 760px) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    background: #fbf6ea;
+  }
+
+  .hero {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 18px 18px 20px !important;
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    gap: 12px !important;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .brand-logo {
+    grid-column: 1 / -1;
+    width: min(220px, 70vw) !important;
+    height: auto !important;
+    max-height: 130px !important;
+    margin: 0 auto 4px !important;
+    object-fit: contain !important;
+  }
+
+  .hero h1 {
+    font-size: clamp(26px, 8vw, 36px) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.05em !important;
+  }
+
+  .hero p {
+    font-size: 15px !important;
+    line-height: 1.35 !important;
+    max-width: 100% !important;
+  }
+
+  .logout-btn {
+    align-self: end !important;
+    margin-left: 0 !important;
+    padding: 11px 15px !important;
+    border-radius: 16px !important;
+  }
+
+  .menu {
+    position: sticky !important;
+    top: 0 !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 10px !important;
+    padding: 12px !important;
+    z-index: 40 !important;
+    background: linear-gradient(90deg, #3a1d06, #5a2e08 55%, #3a1d06) !important;
+    box-shadow: 0 10px 24px rgba(58, 29, 6, .22) !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .menu::-webkit-scrollbar {
+    display: none;
+  }
+
+  .menu button {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: max-content !important;
+    padding: 12px 18px !important;
+    border-radius: 999px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    font-size: 15px !important;
+  }
+
+  .menu button:hover {
+    transform: none !important;
+  }
+
+  .container {
+    margin: 0 !important;
+    padding: 18px 14px 92px !important;
+    width: 100% !important;
+  }
+
+  h2 {
+    font-size: 26px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .card {
+    min-height: 108px !important;
+    padding: 16px !important;
+    border-radius: 20px !important;
+  }
+
+  .card span {
+    font-size: 12px !important;
+  }
+
+  .card strong {
+    font-size: 24px !important;
+    margin-top: 12px !important;
+  }
+
+  .panel {
+    padding: 16px !important;
+    border-radius: 22px !important;
+  }
+
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  input,
+  select,
+  .primary,
+  .secondary,
+  .danger {
+    min-height: 48px !important;
+    font-size: 16px !important;
+  }
+
+  .row,
+  .pedido {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    padding: 14px !important;
+    border-radius: 18px !important;
+  }
+
+  .pedido > div:last-child {
+    display: grid !important;
+    gap: 8px !important;
+  }
+
+  .total {
+    width: 100% !important;
+    min-width: 0 !important;
+    font-size: 22px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .cards {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero {
+    padding: 16px 14px 18px !important;
+  }
+
+  .brand-logo {
+    width: min(190px, 72vw) !important;
+  }
+
+  .hero h1 {
+    font-size: 30px !important;
+  }
+}
