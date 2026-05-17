@@ -9,8 +9,10 @@ const SYNC_KEYS = [
 ] as const;
 
 const APP_ID = 'queijos-wr-pedidos';
-const url = import.meta.env.VITE_SUPABASE_URL;
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const DEFAULT_SUPABASE_URL = 'https://ywwztahbqgiwervbwudg.supabase.co';
+const DEFAULT_SUPABASE_KEY = 'sb_publishable_er0Z1O0s1opKniqu3cYkGg_svVBvXRx';
+const url = import.meta.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_KEY;
 
 const syncEnabled = Boolean(url && anonKey);
 
