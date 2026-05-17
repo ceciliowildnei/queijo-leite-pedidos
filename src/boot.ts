@@ -1,3 +1,3 @@
-import './adminAccessPatch';
-import './syncLocalStorage';
-import './main';
+await import('./adminAccessPatch');
+await import('./syncLocalStorage');
+await import('./main');
