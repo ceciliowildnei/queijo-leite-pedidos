@@ -6,9 +6,10 @@ type AdminSeed = {
   papel: 'Administrador';
 };
 
+// Mantém apenas o administrador principal de emergência.
+// Administradores adicionados ou removidos pelo usuário não devem ser recriados automaticamente.
 const ADMIN_SEEDS: AdminSeed[] = [
   { id: 'admin-wildnei-principal', nome: 'Wildnei', telefone: '18997232533', pin: '1234', papel: 'Administrador' },
-  { id: 'admin-wildnei-celular', nome: 'Wildnei', telefone: '18997670950', pin: '1234', papel: 'Administrador' },
 ];
 
 function onlyNumbers(value: string) {
