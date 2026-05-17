@@ -42,6 +42,52 @@ function setLocalUpdatedAt(key: string, updatedAt: string) {
   localStorage.setItem(`${key}_updated_at`, updatedAt);
 }
 
+function byIdOrPhone(item: any) {
+  return String(item?.id || item?.telefone || item?.phone || Math.random());
+}
+
+function mergeArrayById(localValue: unknown, remoteValue: unknown, key: string) {
+  if (!Array.isArray(localValue) || !Array.isArray(remoteValue)) return remoteValue;
+  const map = new Map<string, any>();
+
+  for (const item of remoteValue) {
+    map.set(byIdOrPhone(item), item);
+  }
+
+  for (const localItem of localValue) {
+    const id = byIdOrPhone(localItem);
+    const remoteItem = map.get(id);
+
+    if (!remoteItem) {
+      map.set(id, localItem);
+      continue;
+    }
+
+    const merged = { ...remoteItem, ...localItem };
+
+    if (key === 'qlp_admins') {
+      merged.pin = localItem?.pin || remoteItem?.pin || '';
+      merged.nome = localItem?.nome || remoteItem?.nome || '';
+      merged.telefone = localItem?.telefone || remoteItem?.telefone || '';
+      merged.papel = localItem?.papel || remoteItem?.papel || 'Administrador';
+    }
+
+    map.set(id, merged);
+  }
+
+  return [...map.values()];
+}
+
+function mergeValues(key: string, localRaw: string | null, remoteRawValue: unknown) {
+  const localValue = safeJsonParse(localRaw);
+
+  if (key === 'qlp_admins' || key === 'qlp_clientes' || key === 'qlp_pedidos' || key === 'qlp_produtos') {
+    return mergeArrayById(localValue, remoteRawValue, key);
+  }
+
+  return remoteRawValue;
+}
+
 if (syncEnabled) {
   const supabase = createClient(url, anonKey);
   const originalSetItem = Storage.prototype.setItem;
@@ -83,24 +129,37 @@ if (syncEnabled) {
 
     pulling = true;
     let changed = false;
+    let shouldPushMerged = false;
 
     for (const row of data || []) {
       const key = String(row.key);
       const remoteUpdatedAt = String(row.updated_at || '');
       const localUpdatedAt = getLocalUpdatedAt(key);
-      const remoteValue = stringifyValue(row.value);
       const localValue = localStorage.getItem(key);
+      const mergedValue = mergeValues(key, localValue, row.value);
+      const mergedText = stringifyValue(mergedValue);
+      const remoteText = stringifyValue(row.value);
 
-      if (remoteUpdatedAt && remoteUpdatedAt > localUpdatedAt && remoteValue !== localValue) {
-        originalSetItem.call(localStorage, key, remoteValue);
-        setLocalUpdatedAt(key, remoteUpdatedAt);
+      if (mergedText !== localValue) {
+        originalSetItem.call(localStorage, key, mergedText);
+        setLocalUpdatedAt(key, remoteUpdatedAt || new Date().toISOString());
         changed = true;
+      }
+
+      if (mergedText !== remoteText || (localUpdatedAt && localUpdatedAt > remoteUpdatedAt)) {
+        shouldPushMerged = true;
+        await supabase.from('app_state').upsert({
+          app_id: APP_ID,
+          key,
+          value: safeJsonParse(mergedText),
+          updated_at: new Date().toISOString(),
+        });
       }
     }
 
     pulling = false;
 
-    if (changed && reloadOnChange) {
+    if ((changed || shouldPushMerged) && reloadOnChange) {
       window.location.reload();
     }
   }
