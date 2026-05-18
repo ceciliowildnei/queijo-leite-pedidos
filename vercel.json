@@ -1,0 +1,32 @@
+{
+  "rewrites": [
+    {
+      "source": "/logo-queijos-wr.png",
+      "destination": "/logo-queijos-wr-final.svg"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/logo-queijos-wr-final.svg",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "image/svg+xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, max-age=0"
+        }
+      ]
+    },
+    {
+      "source": "/logo-queijos-wr.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, max-age=0"
+        }
+      ]
+    }
+  ]
+}
