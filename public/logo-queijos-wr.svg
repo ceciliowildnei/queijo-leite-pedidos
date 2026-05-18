@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="520" viewBox="0 0 760 520" role="img" aria-label="Queijos WR">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#fff0b8"/><stop offset="1" stop-color="#d79b3b"/></linearGradient>
+    <linearGradient id="green" x1="0" x2="1"><stop stop-color="#063f19"/><stop offset="1" stop-color="#0d5b28"/></linearGradient>
+    <linearGradient id="brown" x1="0" x2="1"><stop stop-color="#7b3d13"/><stop offset="1" stop-color="#4a230b"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000" flood-opacity=".35"/></filter>
+  </defs>
+  <path d="M101 276V142c0-70 57-127 127-127h304c70 0 127 57 127 127v134" fill="url(#bg)" stroke="#7a3b12" stroke-width="14"/>
+  <path d="M118 269V145c0-60 49-109 109-109h306c60 0 109 49 109 109v124" fill="#fff1bb" stroke="#fff" stroke-width="7" opacity=".9"/>
+  <g transform="translate(0,4)">
+    <path d="M305 185l75-70 91 70v78H305z" fill="#f7d38a" stroke="#53300f" stroke-width="5"/>
+    <path d="M288 184l92-85 106 85z" fill="#b33a16" stroke="#3b1f0b" stroke-width="6"/>
+    <rect x="354" y="202" width="42" height="61" rx="18" fill="#5a2b11"/>
+    <rect x="415" y="205" width="25" height="35" fill="#ffe08b" stroke="#5a2b11" stroke-width="4"/>
+    <g fill="#2d6c22"><circle cx="220" cy="177" r="38"/><circle cx="250" cy="142" r="35"/><circle cx="544" cy="174" r="40"/><circle cx="508" cy="139" r="34"/></g>
+    <g fill="#ffd36b" stroke="#9b5d12" stroke-width="5">
+      <ellipse cx="242" cy="259" rx="74" ry="38"/><rect x="168" y="223" width="148" height="55" rx="25"/>
+      <path d="M500 223h99c30 0 55 25 55 55v6H500z"/><path d="M500 223c32 8 57 25 57 61H500z"/>
+      <circle cx="590" cy="250" r="8" fill="#b9791f"/><circle cx="626" cy="274" r="10" fill="#b9791f"/><circle cx="546" cy="267" r="7" fill="#b9791f"/>
+    </g>
+  </g>
+  <path d="M42 280h676l-48 135H90z" fill="#a65b16" stroke="#5b2c0d" stroke-width="12" filter="url(#shadow)"/>
+  <path d="M24 274c105-49 608-49 712 0l-32 132c-113-45-535-45-648 0z" fill="url(#green)" stroke="#08370f" stroke-width="12" filter="url(#shadow)"/>
+  <path d="M54 290c120-38 532-38 652 0" fill="none" stroke="#e8bd3e" stroke-width="7"/>
+  <path d="M73 390c125-35 489-35 614 0" fill="none" stroke="#e8bd3e" stroke-width="5"/>
+  <text x="380" y="358" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="92" font-weight="700" fill="#fff7d8" stroke="#17320f" stroke-width="2">Queijos WR</text>
+  <text x="380" y="455" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="38" font-weight="700" letter-spacing="4" fill="#fff7e6" stroke="#3f210a" stroke-width="1.5">SABOR E TRADIÇÃO DE FAMÍLIA</text>
+</svg>
