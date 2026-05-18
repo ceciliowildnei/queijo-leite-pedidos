@@ -11,7 +11,7 @@ const emptyCliente = { nome:'', telefone:'', cep:'', rua:'', numero:'', bairro:'
 const emptyProduto = { nome:'', unidade:'unidade', preco:'', ativo:true };
 const emptyPedido = { cliente_id:'', produto_id:'', quantidade:1, tipo_entrega:'Retirada', forma_pagamento:'Pix', status_pagamento:'Pendente', status_pedido:'Pendente', data_entrega:nextFriday(), pedido_semanal:false, observacoes:'' };
 const emptyAdmin = { nome:'', telefone:'', pin:'1234', papel:'Administrador', ativo:true };
-const logoSrc = '/logo-queijos-wr.png?v=wr-hd-20260518';
+const logoSrc = '/logo-app.svg?v=logo-visivel-20260518';
 
 function App(){
   const [admin,setAdmin]=useState(null),[login,setLogin]=useState({telefone:'',pin:''}),[erro,setErro]=useState(''),[msg,setMsg]=useState(''),[loading,setLoading]=useState(false),[aba,setAba]=useState('dashboard');
