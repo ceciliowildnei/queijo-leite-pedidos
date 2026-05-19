@@ -28,25 +28,31 @@
           if(!tel) return;
           var perfil = perfilDoTelefone(tel);
           var span = document.querySelector('header span');
-          if(span) span.textContent = perfil.nome + ' • ' + perfil.papel;
-          if(perfil.limitado){
-            var permitidos = ['dashboard','relatorio','clientes','novo pedido'];
-            document.querySelectorAll('nav button').forEach(function(botao){
-              var texto = normalizar(botao.textContent || '');
-              botao.style.display = permitidos.indexOf(texto) >= 0 ? '' : 'none';
-            });
-          }
+          var textoPerfil = perfil.nome + ' • ' + perfil.papel;
+          if(span && span.textContent !== textoPerfil) span.textContent = textoPerfil;
+          var permitidos = ['dashboard','relatorio','clientes','novo pedido'];
+          document.querySelectorAll('nav button').forEach(function(botao){
+            var texto = normalizar(botao.textContent || '');
+            var visivel = !perfil.limitado || permitidos.indexOf(texto) >= 0;
+            var display = visivel ? '' : 'none';
+            if(botao.style.display !== display) botao.style.display = display;
+          });
         }
-        document.addEventListener('submit', function(ev){
+        document.addEventListener('submit', function(){
           var campo = document.querySelector('input[placeholder="Celular"]');
           if(campo) sessionStorage.setItem('wr_telefone_logado', apenasNumeros(campo.value));
+          setTimeout(aplicarAcesso, 500);
+          setTimeout(aplicarAcesso, 1500);
         }, true);
         document.addEventListener('click', function(ev){
           var alvo = ev.target;
           if(alvo && alvo.textContent && normalizar(alvo.textContent) === 'sair') sessionStorage.removeItem('wr_telefone_logado');
         }, true);
-        new MutationObserver(aplicarAcesso).observe(document.documentElement, { childList: true, subtree: true });
-        window.addEventListener('load', function(){ setTimeout(aplicarAcesso, 300); setTimeout(aplicarAcesso, 1200); });
+        window.addEventListener('load', function(){
+          setTimeout(aplicarAcesso, 300);
+          setTimeout(aplicarAcesso, 1200);
+          setTimeout(aplicarAcesso, 2500);
+        });
       })();
     </script>
   </head>
