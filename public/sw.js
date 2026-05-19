@@ -1,5 +1,5 @@
-const CACHE_NAME = 'queijos-wr-pedidos-v3-logo';
-const APP_SHELL = ['/', '/manifest.webmanifest', '/logo-app.svg'];
+const CACHE_NAME = 'queijos-wr-pedidos-v4-logo-icone';
+const APP_SHELL = ['/', '/manifest.webmanifest', '/logo-app.svg', '/logo-queijos-wr.svg', '/icone.svg', '/pwa-icon.svg'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
