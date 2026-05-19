@@ -11,10 +11,22 @@
   "categories": ["business", "productivity"],
   "icons": [
     {
-      "src": "/pwa-icon.svg",
-      "sizes": "any",
+      "src": "/icone.svg",
+      "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/pwa-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo-app.svg",
+      "sizes": "1200x817",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }
