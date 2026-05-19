@@ -12,6 +12,43 @@
     <link rel="icon" href="/pwa-icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/pwa-icon.svg" />
     <title>Queijos WR Pedidos</title>
+    <script>
+      (function(){
+        function apenasNumeros(valor){ return String(valor || '').replace(/\D/g, ''); }
+        function normalizar(valor){ return String(valor || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); }
+        function perfilDoTelefone(tel){
+          if(tel === '18997232533') return { nome: 'Wildnei', papel: 'ADM Geral', limitado: false };
+          if(tel === '18996454360') return { nome: 'Wilson', papel: 'Colaborador', limitado: true };
+          if(tel === '18997670950') return { nome: 'Roseli', papel: 'Colaborador', limitado: true };
+          return { nome: 'Usuário', papel: 'Colaborador', limitado: true };
+        }
+        function celularSalvo(){ return apenasNumeros(sessionStorage.getItem('wr_telefone_logado') || ''); }
+        function aplicarAcesso(){
+          var tel = celularSalvo();
+          if(!tel) return;
+          var perfil = perfilDoTelefone(tel);
+          var span = document.querySelector('header span');
+          if(span) span.textContent = perfil.nome + ' • ' + perfil.papel;
+          if(perfil.limitado){
+            var permitidos = ['dashboard','relatorio','clientes','novo pedido'];
+            document.querySelectorAll('nav button').forEach(function(botao){
+              var texto = normalizar(botao.textContent || '');
+              botao.style.display = permitidos.indexOf(texto) >= 0 ? '' : 'none';
+            });
+          }
+        }
+        document.addEventListener('submit', function(ev){
+          var campo = document.querySelector('input[placeholder="Celular"]');
+          if(campo) sessionStorage.setItem('wr_telefone_logado', apenasNumeros(campo.value));
+        }, true);
+        document.addEventListener('click', function(ev){
+          var alvo = ev.target;
+          if(alvo && alvo.textContent && normalizar(alvo.textContent) === 'sair') sessionStorage.removeItem('wr_telefone_logado');
+        }, true);
+        new MutationObserver(aplicarAcesso).observe(document.documentElement, { childList: true, subtree: true });
+        window.addEventListener('load', function(){ setTimeout(aplicarAcesso, 300); setTimeout(aplicarAcesso, 1200); });
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
