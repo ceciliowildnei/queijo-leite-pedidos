@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="817" viewBox="0 0 1200 817" role="img" aria-label="Queijos WR" preserveAspectRatio="xMidYMid meet">
+  <rect x="0" y="0" width="1200" height="817" fill="#ffffff"/>
   <defs>
     <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3bd"/><stop offset="0.55" stop-color="#d69b35"/><stop offset="1" stop-color="#7b3f12"/></linearGradient>
     <linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#06391f"/><stop offset="0.55" stop-color="#0b4d2b"/><stop offset="1" stop-color="#052314"/></linearGradient>
