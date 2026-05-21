@@ -1,3 +1,10 @@
+declare const process: {
+  env: {
+    META_WHATSAPP_TOKEN?: string;
+    META_WHATSAPP_PHONE_NUMBER_ID?: string;
+  };
+};
+
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'Método não permitido.' });
