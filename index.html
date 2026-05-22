@@ -16,6 +16,7 @@
       (function(){
         function apenasNumeros(valor){ return String(valor || '').replace(/\D/g, ''); }
         function normalizar(valor){ return String(valor || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); }
+        function dinheiro(valor){ return Number(valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
         function perfilDoTelefone(tel){
           if(tel === '18997232533') return { nome: 'Wildnei', papel: 'ADM Geral', limitado: false };
           if(tel === '18996454360') return { nome: 'Wilson', papel: 'Colaborador', limitado: true };
@@ -40,9 +41,15 @@
         }
         function formatarData(valor){
           if(!valor || valor === '-') return 'Sem data definida';
-          var partes = String(valor).trim().split('-');
+          var partes = String(valor).trim().slice(0,10).split('-');
           if(partes.length === 3) return partes[2] + '/' + partes[1] + '/' + partes[0];
           return String(valor).trim();
+        }
+        function chaveOrdenacaoData(valor){
+          if(!valor || valor === '-' || valor === 'Sem data definida') return '9999-99-99';
+          var texto = String(valor).trim();
+          if(/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) return texto.split('/').reverse().join('-');
+          return texto.slice(0,10);
         }
         function separarPedidosPorData(){
           var painel = Array.from(document.querySelectorAll('section.panel.wide')).find(function(sec){
@@ -60,35 +67,103 @@
             if(!grupos[data]) grupos[data] = [];
             grupos[data].push(card);
           });
-          var ordenar = Object.keys(grupos).sort(function(a,b){
-            var aa = a === '-' || a === 'Sem data definida' ? '9999-99-99' : a.split('/').reverse().join('-');
-            var bb = b === '-' || b === 'Sem data definida' ? '9999-99-99' : b.split('/').reverse().join('-');
-            return aa.localeCompare(bb);
-          });
+          var ordenar = Object.keys(grupos).sort(function(a,b){ return chaveOrdenacaoData(a).localeCompare(chaveOrdenacaoData(b)); });
           pedidos.forEach(function(card){ card.remove(); });
           ordenar.forEach(function(data){
             var bloco = document.createElement('div');
             bloco.className = 'grupo-data-pedidos';
             var titulo = document.createElement('h3');
             titulo.textContent = 'Entrega: ' + formatarData(data) + ' — ' + grupos[data].length + (grupos[data].length > 1 ? ' pedidos' : ' pedido');
-            titulo.style.margin = '22px 0 12px';
-            titulo.style.padding = '10px 12px';
-            titulo.style.borderRadius = '14px';
-            titulo.style.background = 'rgba(79,45,24,0.08)';
-            titulo.style.border = '1px solid rgba(79,45,24,0.18)';
-            titulo.style.color = '#4f2d18';
-            titulo.style.fontSize = '1.05rem';
-            titulo.style.fontWeight = '900';
+            estilizarTituloData(titulo);
             bloco.appendChild(titulo);
             grupos[data].forEach(function(card){ bloco.appendChild(card); });
             painel.appendChild(bloco);
           });
           painel.dataset.separadoPorData = 'sim';
         }
+        function estilizarTituloData(titulo){
+          titulo.style.margin = '22px 0 12px';
+          titulo.style.padding = '10px 12px';
+          titulo.style.borderRadius = '14px';
+          titulo.style.background = 'rgba(79,45,24,0.08)';
+          titulo.style.border = '1px solid rgba(79,45,24,0.18)';
+          titulo.style.color = '#4f2d18';
+          titulo.style.fontSize = '1.05rem';
+          titulo.style.fontWeight = '900';
+        }
+        async function credenciaisSupabase(){
+          if(window.__wrSupabaseCreds) return window.__wrSupabaseCreds;
+          var script = Array.from(document.querySelectorAll('script[src]')).find(function(s){ return (s.src || '').indexOf('/assets/index-') >= 0 || (s.src || '').indexOf('/src/main.jsx') >= 0; });
+          if(!script) return null;
+          var texto = await fetch(script.src, { cache: 'no-store' }).then(function(r){ return r.text(); }).catch(function(){ return ''; });
+          var url = (texto.match(/https:\/\/[a-z0-9]+\.supabase\.co/i) || [])[0];
+          var key = (texto.match(/sb_publishable_[A-Za-z0-9_\-]+/) || [])[0];
+          if(!url || !key) return null;
+          window.__wrSupabaseCreds = { url: url, key: key };
+          return window.__wrSupabaseCreds;
+        }
+        async function separarRelatorioPorData(){
+          var painel = Array.from(document.querySelectorAll('section.panel.wide')).find(function(sec){
+            var h2 = sec.querySelector('h2');
+            return h2 && normalizar(h2.textContent).indexOf('relatorio simples') >= 0;
+          });
+          if(!painel || painel.dataset.relatorioPorData === 'sim') return;
+          var tabelaOriginal = painel.querySelector('table.relatorio');
+          if(!tabelaOriginal) return;
+          var creds = await credenciaisSupabase();
+          if(!creds) return;
+          var url = creds.url + '/rest/v1/wr_pedidos?select=*&order=data_entrega.asc&order=criado_em.desc';
+          var dados = await fetch(url, { headers: { apikey: creds.key, Authorization: 'Bearer ' + creds.key } }).then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; });
+          if(!Array.isArray(dados) || dados.length === 0) return;
+          var grupos = {};
+          dados.forEach(function(p){
+            var data = p.data_entrega || 'Sem data definida';
+            if(!grupos[data]) grupos[data] = [];
+            grupos[data].push(p);
+          });
+          var container = document.createElement('div');
+          container.className = 'relatorio-por-data';
+          Object.keys(grupos).sort(function(a,b){ return chaveOrdenacaoData(a).localeCompare(chaveOrdenacaoData(b)); }).forEach(function(data){
+            var lista = grupos[data];
+            var totalDia = lista.reduce(function(s,p){ return s + Number(p.total || 0); }, 0);
+            var bloco = document.createElement('div');
+            bloco.className = 'grupo-data-relatorio';
+            var titulo = document.createElement('h3');
+            titulo.textContent = 'Entrega: ' + formatarData(data) + ' — ' + lista.length + (lista.length > 1 ? ' pedidos' : ' pedido') + ' — Total: ' + dinheiro(totalDia);
+            estilizarTituloData(titulo);
+            var wrap = document.createElement('div');
+            wrap.className = 'tabela-wrap';
+            var tabela = document.createElement('table');
+            tabela.className = 'relatorio';
+            tabela.innerHTML = '<thead><tr><th>Nome</th><th>Pedido</th><th>Qtd.</th><th>Total</th></tr></thead><tbody></tbody>';
+            var tbody = tabela.querySelector('tbody');
+            lista.forEach(function(p){
+              var tr = document.createElement('tr');
+              tr.innerHTML = '<td></td><td></td><td></td><td></td>';
+              tr.children[0].textContent = p.cliente_nome || '';
+              tr.children[1].textContent = p.produto_nome || '';
+              tr.children[2].textContent = p.quantidade || '';
+              tr.children[3].textContent = dinheiro(p.total || 0);
+              tbody.appendChild(tr);
+            });
+            wrap.appendChild(tabela);
+            bloco.appendChild(titulo);
+            bloco.appendChild(wrap);
+            container.appendChild(bloco);
+          });
+          var antigo = painel.querySelector('.tabela-wrap');
+          if(antigo) antigo.replaceWith(container);
+          painel.dataset.relatorioPorData = 'sim';
+        }
         function vigiarPedidos(){
           setTimeout(separarPedidosPorData, 300);
           setTimeout(separarPedidosPorData, 900);
           setTimeout(separarPedidosPorData, 1800);
+        }
+        function vigiarRelatorio(){
+          setTimeout(separarRelatorioPorData, 300);
+          setTimeout(separarRelatorioPorData, 900);
+          setTimeout(separarRelatorioPorData, 1800);
         }
         document.addEventListener('submit', function(){
           var campo = document.querySelector('input[placeholder="Celular"]');
@@ -96,21 +171,25 @@
           setTimeout(aplicarAcesso, 500);
           setTimeout(aplicarAcesso, 1500);
           vigiarPedidos();
+          vigiarRelatorio();
         }, true);
         document.addEventListener('click', function(ev){
           var alvo = ev.target;
           if(alvo && alvo.textContent && normalizar(alvo.textContent) === 'sair') sessionStorage.removeItem('wr_telefone_logado');
           setTimeout(aplicarAcesso, 300);
           vigiarPedidos();
+          vigiarRelatorio();
         }, true);
         window.addEventListener('load', function(){
           setTimeout(aplicarAcesso, 300);
           setTimeout(aplicarAcesso, 1200);
           setTimeout(aplicarAcesso, 2500);
           vigiarPedidos();
+          vigiarRelatorio();
           var obs = new MutationObserver(function(){
             aplicarAcesso();
             separarPedidosPorData();
+            separarRelatorioPorData();
           });
           obs.observe(document.body, { childList: true, subtree: true });
         });
