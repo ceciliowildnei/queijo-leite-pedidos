@@ -51,6 +51,45 @@
           if(/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) return texto.split('/').reverse().join('-');
           return texto.slice(0,10);
         }
+        function estilizarTituloData(titulo){
+          titulo.style.margin = '22px 0 12px';
+          titulo.style.padding = '10px 12px';
+          titulo.style.borderRadius = '14px';
+          titulo.style.background = 'rgba(79,45,24,0.08)';
+          titulo.style.border = '1px solid rgba(79,45,24,0.18)';
+          titulo.style.color = '#4f2d18';
+          titulo.style.fontSize = '1.05rem';
+          titulo.style.fontWeight = '900';
+        }
+        function aplicarBotaoRecolher(bloco){
+          if(!bloco || bloco.dataset.botaoRecolher === 'sim') return;
+          var titulo = bloco.querySelector(':scope > h3');
+          if(!titulo) return;
+          var botao = document.createElement('button');
+          botao.type = 'button';
+          botao.textContent = 'Recolher pedidos';
+          botao.style.margin = '0 0 12px';
+          botao.style.padding = '8px 14px';
+          botao.style.borderRadius = '12px';
+          botao.style.border = '1px solid rgba(79,45,24,0.25)';
+          botao.style.background = '#fff8ea';
+          botao.style.color = '#4f2d18';
+          botao.style.fontWeight = '900';
+          botao.style.cursor = 'pointer';
+          botao.onclick = function(){
+            var fechado = bloco.dataset.fechado === 'sim';
+            Array.from(bloco.children).forEach(function(el){
+              if(el !== titulo && el !== botao) el.style.display = fechado ? '' : 'none';
+            });
+            bloco.dataset.fechado = fechado ? 'nao' : 'sim';
+            botao.textContent = fechado ? 'Recolher pedidos' : 'Visualizar pedidos';
+          };
+          titulo.insertAdjacentElement('afterend', botao);
+          bloco.dataset.botaoRecolher = 'sim';
+        }
+        function aplicarBotoesRecolher(){
+          document.querySelectorAll('.grupo-data-pedidos, .grupo-data-relatorio').forEach(aplicarBotaoRecolher);
+        }
         function separarPedidosPorData(){
           var painel = Array.from(document.querySelectorAll('section.panel.wide')).find(function(sec){
             var h2 = sec.querySelector('h2');
@@ -78,18 +117,9 @@
             bloco.appendChild(titulo);
             grupos[data].forEach(function(card){ bloco.appendChild(card); });
             painel.appendChild(bloco);
+            aplicarBotaoRecolher(bloco);
           });
           painel.dataset.separadoPorData = 'sim';
-        }
-        function estilizarTituloData(titulo){
-          titulo.style.margin = '22px 0 12px';
-          titulo.style.padding = '10px 12px';
-          titulo.style.borderRadius = '14px';
-          titulo.style.background = 'rgba(79,45,24,0.08)';
-          titulo.style.border = '1px solid rgba(79,45,24,0.18)';
-          titulo.style.color = '#4f2d18';
-          titulo.style.fontSize = '1.05rem';
-          titulo.style.fontWeight = '900';
         }
         async function credenciaisSupabase(){
           if(window.__wrSupabaseCreds) return window.__wrSupabaseCreds;
@@ -150,6 +180,7 @@
             bloco.appendChild(titulo);
             bloco.appendChild(wrap);
             container.appendChild(bloco);
+            aplicarBotaoRecolher(bloco);
           });
           var antigo = painel.querySelector('.tabela-wrap');
           if(antigo) antigo.replaceWith(container);
@@ -159,11 +190,13 @@
           setTimeout(separarPedidosPorData, 300);
           setTimeout(separarPedidosPorData, 900);
           setTimeout(separarPedidosPorData, 1800);
+          setTimeout(aplicarBotoesRecolher, 2000);
         }
         function vigiarRelatorio(){
           setTimeout(separarRelatorioPorData, 300);
           setTimeout(separarRelatorioPorData, 900);
           setTimeout(separarRelatorioPorData, 1800);
+          setTimeout(aplicarBotoesRecolher, 2000);
         }
         document.addEventListener('submit', function(){
           var campo = document.querySelector('input[placeholder="Celular"]');
@@ -190,6 +223,7 @@
             aplicarAcesso();
             separarPedidosPorData();
             separarRelatorioPorData();
+            aplicarBotoesRecolher();
           });
           obs.observe(document.body, { childList: true, subtree: true });
         });
