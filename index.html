@@ -234,6 +234,79 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>
+      (function(){
+        function setSelectValue(select, value){
+          if(!select) return;
+          var setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value').set;
+          setter.call(select, value);
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        function buttonStyle(btn, bg, color){
+          btn.type = 'button';
+          btn.style.margin = '4px';
+          btn.style.padding = '8px 12px';
+          btn.style.borderRadius = '12px';
+          btn.style.border = '1px solid rgba(79,45,24,.2)';
+          btn.style.background = bg;
+          btn.style.color = color || '#4f2d18';
+          btn.style.fontWeight = '900';
+          btn.style.cursor = 'pointer';
+        }
+        function encontrarSelect(article, valores){
+          return Array.from(article.querySelectorAll('select')).find(function(sel){
+            var opts = Array.from(sel.options).map(function(o){ return o.value || o.textContent; });
+            return valores.every(function(v){ return opts.indexOf(v) >= 0; });
+          });
+        }
+        function atualizarTextoPagamento(botao, select){
+          var pago = select && select.value === 'Pago';
+          botao.textContent = pago ? 'Pago ✓' : 'Não pago';
+          botao.style.background = pago ? '#d9f7df' : '#fff4d6';
+          botao.style.color = pago ? '#145a25' : '#6b3d17';
+        }
+        function ajustarAcoesPedidos(){
+          document.querySelectorAll('article.pedido').forEach(function(article){
+            if(article.dataset.acoesVenda === 'sim') return;
+            var statusPedido = encontrarSelect(article, ['Pendente','Separado','Entregue','Cancelado']);
+            var statusPagamento = encontrarSelect(article, ['Pendente','Pago']);
+            var area = article.querySelector('div:last-child') || article;
+            if(statusPedido){
+              statusPedido.style.display = 'none';
+              var concluir = document.createElement('button');
+              concluir.textContent = 'Concluir venda';
+              buttonStyle(concluir, '#e9f7df', '#245317');
+              concluir.onclick = function(){ setSelectValue(statusPedido, 'Separado'); };
+              var entregue = document.createElement('button');
+              entregue.textContent = 'Entregue';
+              buttonStyle(entregue, '#dff1ff', '#164466');
+              entregue.onclick = function(){ setSelectValue(statusPedido, 'Entregue'); };
+              area.insertBefore(concluir, area.firstChild);
+              area.insertBefore(entregue, concluir.nextSibling);
+            }
+            if(statusPagamento){
+              statusPagamento.style.display = 'none';
+              var pagamento = document.createElement('button');
+              buttonStyle(pagamento, '#fff4d6', '#6b3d17');
+              atualizarTextoPagamento(pagamento, statusPagamento);
+              pagamento.onclick = function(){
+                setSelectValue(statusPagamento, statusPagamento.value === 'Pago' ? 'Pendente' : 'Pago');
+                setTimeout(function(){ atualizarTextoPagamento(pagamento, statusPagamento); }, 80);
+              };
+              statusPagamento.insertAdjacentElement('afterend', pagamento);
+            }
+            article.dataset.acoesVenda = 'sim';
+          });
+        }
+        window.addEventListener('load', function(){
+          setTimeout(ajustarAcoesPedidos, 400);
+          setTimeout(ajustarAcoesPedidos, 1200);
+          setTimeout(ajustarAcoesPedidos, 2500);
+          new MutationObserver(ajustarAcoesPedidos).observe(document.body, { childList: true, subtree: true });
+        });
+        document.addEventListener('click', function(){ setTimeout(ajustarAcoesPedidos, 300); }, true);
+      })();
+    </script>
+    <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js').catch(() => {});
