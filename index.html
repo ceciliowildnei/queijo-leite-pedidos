@@ -3,47 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#063f22" />
+    <meta name="theme-color" content="#1f5b35" />
     <link rel="icon" href="/logo-app.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/logo-app.svg" />
-    <style>
-      html,body,#root{min-height:100%;}
-      .login{min-height:100vh!important;padding:0!important;display:grid!important;place-items:center!important;background:radial-gradient(circle at 50% 0,#fff 0,#f8f2e8 50%,#efe2cf 100%)!important;overflow:auto!important;}
-      .login:before,.login img,.login p,.login section:after{display:none!important;content:none!important;}
-      .login section{width:min(430px,calc(100vw - 32px))!important;min-height:auto!important;display:block!important;padding:0!important;margin:0 auto!important;}
-      .login h1{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif!important;font-size:30px!important;line-height:1.1!important;letter-spacing:-.04em!important;text-align:center!important;margin:0 0 20px!important;color:#1d130a!important;font-weight:900!important;}
-      .login h1:before{content:'Sistema Queijos WR'!important;display:block!important;font-family:Inter,system-ui,sans-serif!important;font-size:12px!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#c8892b!important;font-weight:900!important;margin:0 0 12px!important;}
-      .login form{width:100%!important;max-width:none!important;background:rgba(255,253,248,.96)!important;border:1px solid #e9ddcb!important;border-radius:28px!important;padding:30px!important;box-shadow:0 28px 80px rgba(6,63,34,.16)!important;display:grid!important;gap:16px!important;}
-      .login form:before{content:'Acesso administrativo'!important;text-align:center!important;font-size:13px!important;letter-spacing:.14em!important;text-transform:uppercase!important;color:#756b5f!important;font-weight:900!important;margin-bottom:2px!important;}
-      .login input{height:54px!important;border-radius:16px!important;background:#fff!important;border:1px solid #e3d6c2!important;padding:0 16px!important;font-size:15px!important;box-shadow:none!important;}
-      .login button{height:54px!important;border-radius:16px!important;background:linear-gradient(180deg,#0a5a31,#063f22)!important;color:#fff!important;font-weight:900!important;box-shadow:0 16px 32px rgba(6,63,34,.20)!important;margin-top:2px!important;}
-      .login form small{display:none!important;}
-      .login .err{margin:0!important;text-align:center!important;}
-      .login .login-intro,.login .login-logo{display:none!important;}
-    </style>
     <title>Queijos WR Pedidos</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <script>
-      function wrFixLogin(){
-        const login=document.querySelector('.login');
-        if(!login)return;
-        login.style.setProperty('padding','0','important');
-        login.style.setProperty('display','grid','important');
-        login.style.setProperty('place-items','center','important');
-        login.style.setProperty('min-height','100vh','important');
-        login.style.setProperty('background','radial-gradient(circle at 50% 0,#fff 0,#f8f2e8 50%,#efe2cf 100%)','important');
-        const img=login.querySelector('img'); if(img) img.remove();
-        const p=login.querySelector('p'); if(p) p.remove();
-        const small=login.querySelector('small'); if(small) small.remove();
-        const section=login.querySelector('section');
-        if(section){section.style.setProperty('width','min(430px,calc(100vw - 32px))','important');section.style.setProperty('min-height','auto','important');section.style.setProperty('display','block','important');section.style.setProperty('padding','0','important');}
-        const h1=login.querySelector('h1'); if(h1) h1.textContent='Acesso Administrativo';
-      }
-      new MutationObserver(wrFixLogin).observe(document.documentElement,{childList:true,subtree:true});
-      window.addEventListener('load',wrFixLogin); setInterval(wrFixLogin,500);
-    </script>
   </body>
 </html>
