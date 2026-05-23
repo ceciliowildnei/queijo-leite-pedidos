@@ -3,10 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#241407" />
+    <meta name="theme-color" content="#063f22" />
     <link rel="icon" href="/logo-app.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/logo-app.svg" />
-    <style>.login form small{display:none!important}</style>
+    <style>
+      .login{min-height:100vh!important;padding:0!important;display:grid!important;place-items:center!important;background:radial-gradient(circle at 50% 0,#fff 0,#f8f2e8 50%,#efe2cf 100%)!important;overflow:auto!important;}
+      .login:before,.login img,.login p,.login section:after{display:none!important;content:none!important;}
+      .login section{width:min(430px,calc(100vw - 32px))!important;min-height:auto!important;display:block!important;padding:0!important;margin:0 auto!important;}
+      .login h1{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif!important;font-size:30px!important;line-height:1.1!important;letter-spacing:-.04em!important;text-align:center!important;margin:0 0 20px!important;color:#1d130a!important;font-weight:900!important;}
+      .login h1:before{content:'Sistema Queijos WR'!important;display:block!important;font-family:Inter,system-ui,sans-serif!important;font-size:12px!important;letter-spacing:.18em!important;text-transform:uppercase!important;color:#c8892b!important;font-weight:900!important;margin:0 0 12px!important;}
+      .login form{width:100%!important;max-width:none!important;background:rgba(255,253,248,.96)!important;border:1px solid #e9ddcb!important;border-radius:28px!important;padding:30px!important;box-shadow:0 28px 80px rgba(6,63,34,.16)!important;display:grid!important;gap:16px!important;}
+      .login form:before{content:'Acesso administrativo'!important;text-align:center!important;font-size:13px!important;letter-spacing:.14em!important;text-transform:uppercase!important;color:#756b5f!important;font-weight:900!important;margin-bottom:2px!important;}
+      .login input{height:54px!important;border-radius:16px!important;background:#fff!important;border:1px solid #e3d6c2!important;padding:0 16px!important;font-size:15px!important;box-shadow:none!important;}
+      .login input:focus{border-color:#c8892b!important;box-shadow:0 0 0 4px rgba(200,137,43,.13)!important;}
+      .login button{height:54px!important;border-radius:16px!important;background:linear-gradient(180deg,#0a5a31,#063f22)!important;color:#fff!important;font-weight:900!important;box-shadow:0 16px 32px rgba(6,63,34,.20)!important;margin-top:2px!important;}
+      .login form small{display:none!important;}
+      .login .err{margin:0!important;text-align:center!important;}
+      .entregas-layout{display:grid!important;grid-template-columns:minmax(0,1fr) 390px!important;gap:20px!important;align-items:start!important;}
+      .entregas-main{display:grid!important;gap:16px!important;}
+      .route-card{background:rgba(255,253,248,.94)!important;border:1px solid #e9ddcb!important;border-radius:22px!important;box-shadow:0 18px 45px rgba(31,49,28,.09)!important;overflow:hidden!important;}
+      .route-head{display:flex!important;align-items:center!important;justify-content:space-between!important;padding:16px 18px!important;border-bottom:1px solid #efe5d5!important;}
+      .route-title{font-weight:900!important;color:#1d130a!important;}
+      .route-total{font-weight:900!important;color:#063f22!important;background:#f5eddc!important;border-radius:999px!important;padding:7px 12px!important;font-size:13px!important;}
+      .delivery-row{display:grid!important;grid-template-columns:38px 70px 1.4fr 1fr 1.2fr 110px 120px 110px!important;gap:10px!important;align-items:center!important;padding:13px 18px!important;border-bottom:1px solid #f1e8da!important;font-size:13px!important;}
+      .delivery-row:last-child{border-bottom:0!important;}
+      .num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#fbefd8;color:#8a5a12;font-weight:900;}
+      .client strong{display:block;color:#1d130a}.client small,.pedido-info small{display:block;color:#756b5f;margin-top:2px}.tag{display:inline-block;background:#fff6e8;border:1px solid #efe4d1;border-radius:8px;padding:5px 8px;margin:2px;color:#6e4b1b;font-size:11px;font-weight:800}.status-blue{background:#e6f1fb!important;color:#1d5c8c!important}.status-orange{background:#fff0d2!important;color:#a15c0d!important}.status-green{background:#ddeedb!important;color:#216b28!important}.view-btn{background:#fffdf8!important;color:#8a5a12!important;border:1px solid #ecdcc4!important;box-shadow:none!important;padding:9px 10px!important;border-radius:10px!important;font-size:12px!important;}
+      .side-stack{display:grid!important;gap:16px!important;position:relative!important}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.summary-tile{background:#fffaf1;border:1px solid #eadfce;border-radius:16px;padding:15px;min-height:88px}.summary-tile b{display:block;font-size:22px;color:#1d130a;margin-top:5px}.summary-tile .money{color:#063f22}.map-card{height:210px;background:linear-gradient(135deg,#eef4ed,#fffaf1);border:1px solid #eadfce;border-radius:18px;position:relative;overflow:hidden}.map-card:before{content:'';position:absolute;inset:22px;background:linear-gradient(30deg,transparent 48%,rgba(6,63,34,.15) 49%,rgba(6,63,34,.15) 51%,transparent 52%),linear-gradient(130deg,transparent 45%,rgba(200,137,43,.2) 46%,rgba(200,137,43,.2) 48%,transparent 49%);border-radius:14px}.quick-action{display:flex;align-items:center;gap:10px;padding:13px;border:1px solid #eadfce;border-radius:14px;background:#fffdf8;margin-bottom:9px;font-weight:800}.phone-preview{position:absolute;right:-18px;bottom:-72px;width:165px;height:330px;border:8px solid #1d1d1d;border-radius:34px;background:#fffdf8;box-shadow:0 20px 45px rgba(0,0,0,.22);padding:16px 10px;font-size:9px;overflow:hidden}.phone-preview h4{margin:4px 0 10px;font-size:14px;color:#8a5a12;text-align:center}.phone-item{border-top:1px solid #eee0cc;padding:7px 0}.phone-nav{position:absolute;bottom:8px;left:10px;right:10px;display:flex;justify-content:space-around;border-top:1px solid #eee0cc;padding-top:6px;color:#8a5a12}.dashboard-hero-logo{max-width:210px;margin:0 auto 22px;display:block}.sidebar-art{height:170px;border-radius:22px;margin:0 0 22px;background:linear-gradient(180deg,rgba(255,253,248,.65),rgba(255,253,248,.25)),radial-gradient(circle at 30% 35%,#fff7e4,transparent 34%),linear-gradient(135deg,#e8f0df,#fbf3e4);border:1px solid rgba(200,137,43,.22);position:relative;overflow:hidden}.sidebar-art:before{content:'⌂';position:absolute;left:38px;top:48px;font-size:54px;color:#b98a38}.sidebar-art:after{content:'🐄  🐄';position:absolute;left:58px;bottom:26px;font-size:28px;filter:saturate(.75) opacity(.82)}
+    </style>
     <title>Queijos WR Pedidos</title>
   </head>
   <body>
