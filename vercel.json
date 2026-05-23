@@ -1,32 +1,38 @@
-{
-  "rewrites": [
-    {
-      "source": "/logo-queijos-wr.png",
-      "destination": "/logo-queijos-wr-final.svg"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/logo-queijos-wr-final.svg",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "image/svg+xml; charset=utf-8"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate, max-age=0"
-        }
-      ]
-    },
-    {
-      "source": "/logo-queijos-wr.png",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate, max-age=0"
-        }
-      ]
-    }
-  ]
-}
+const CACHE_NAME = 'queijos-wr-pedidos-v9-public-sem-fundo';
+const APP_SHELL = [
+  '/',
+  '/manifest.webmanifest',
+  '/logo-queijos-wr.png',
+  '/logo-app.png',
+  '/logo.png',
+  '/logo-queijos-wr.svg',
+  '/logo-app.svg',
+  '/pwa-icon-192.png',
+  '/pwa-icon-512.png',
+  '/pwa-icon.svg',
+  '/icone.png',
+  '/icone.svg',
+  '/favicon.ico',
+  '/favicon-16.png',
+  '/favicon-32.png',
+  '/apple-touch-icon.png'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    fetch(event.request).catch(() => caches.match(event.request).then((cached) => cached || caches.match('/')))
+  );
+});
