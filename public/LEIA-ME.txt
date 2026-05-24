@@ -1,0 +1,33 @@
+PASTA PUBLIC - QUEIJOS WR - LOGO SEM FUNDO
+
+Esta pasta foi gerada para uso direto no GitHub/Vercel, dentro da pasta public do projeto.
+
+Arquivos principais:
+- logo-queijos-wr.png
+- logo-app.png
+- logo.png
+- logo-queijos-wr.svg
+- logo-app.svg
+
+Ícones:
+- apple-touch-icon.png
+- favicon.ico
+- favicon-16.png
+- favicon-32.png
+- pwa-icon-192.png
+- pwa-icon-512.png
+- pwa-icon.svg
+- icone.png
+- icone.svg
+
+Arquivos de apoio:
+- manifest.webmanifest
+- sw.js
+- USAR_NO_INDEX.html
+- vercel.json
+
+Como usar:
+1. Substitua os arquivos da pasta public do projeto por estes arquivos.
+2. Faça commit e deploy na Vercel.
+3. Se aparecer o logo antigo, limpe o cache do navegador ou faça hard refresh.
+4. O service worker usa um novo CACHE_NAME para forçar atualização dos arquivos.
