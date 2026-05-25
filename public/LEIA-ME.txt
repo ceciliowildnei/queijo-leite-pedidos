@@ -1,0 +1,25 @@
+PASTA PUBLIC - LOGO QUEIJOS WR COM FUNDO TRANSPARENTE
+
+Arquivos principais:
+- logo-queijos-wr.png
+- logo-app.png
+- logo.png
+- logo-queijos-wr.svg
+- logo-app.svg
+
+Ícones:
+- favicon.ico
+- favicon-16.png
+- favicon-32.png
+- apple-touch-icon.png
+- pwa-icon-192.png
+- pwa-icon-512.png
+- pwa-icon.svg
+- icone.png
+- icone.svg
+
+Como usar:
+1. Substitua os arquivos da pasta public por estes.
+2. Faça commit no GitHub.
+3. Faça novo deploy no Vercel.
+4. Se aparecer o logo antigo, limpe cache e atualize o service worker.
