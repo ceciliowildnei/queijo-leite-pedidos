@@ -1,1 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1448" height="1063" viewBox="0 0 1448 1063" role="img" aria-label="Queijos WR"><image href="data:image/png;base64,PLACEHOLDER" width="1448" height="1063"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1448 1063" role="img" aria-label="Queijos WR">
+  <defs>
+    <linearGradient id="green" x1="0" x2="1"><stop stop-color="#04331e"/><stop offset=".45" stop-color="#0b4a2b"/><stop offset="1" stop-color="#022b1a"/></linearGradient>
+    <linearGradient id="gold" x1="0" x2="1"><stop stop-color="#fff3a6"/><stop offset=".35" stop-color="#d58a13"/><stop offset=".7" stop-color="#f7c245"/><stop offset="1" stop-color="#8a4b07"/></linearGradient>
+    <linearGradient id="cheese" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff2a8"/><stop offset=".35" stop-color="#ffc342"/><stop offset=".75" stop-color="#c66f05"/><stop offset="1" stop-color="#7d4300"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="9" stdDeviation="7" flood-color="#02180e" flood-opacity=".38"/></filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity=".18"/></filter>
+    <style>
+      .title{font-family:Georgia,'Times New Roman',serif;font-weight:900;font-size:245px;letter-spacing:-12px}
+      .slogan{font-family:Georgia,'Times New Roman',serif;font-weight:900;font-size:58px;letter-spacing:5px}
+      .line{stroke:#b96d09;stroke-width:3;fill:none;opacity:.75}
+    </style>
+  </defs>
+  <g filter="url(#soft)">
+    <g stroke="url(#gold)" stroke-width="8" stroke-linecap="round">
+      <path d="M723 40v92M660 54l24 85M785 54l-24 85M600 83l54 74M846 83l-54 74M552 129l78 50M894 129l-78 50"/>
+    </g>
+    <path d="M305 280c72-16 118-55 141-124" stroke="#b87912" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M1143 280c-72-16-118-55-141-124" stroke="#b87912" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <g fill="url(#gold)" stroke="#8a4b07" stroke-width="3">
+      <ellipse cx="372" cy="185" rx="17" ry="40" transform="rotate(26 372 185)"/><ellipse cx="337" cy="228" rx="15" ry="35" transform="rotate(-50 337 228)"/><ellipse cx="421" cy="226" rx="15" ry="35" transform="rotate(38 421 226)"/>
+      <ellipse cx="1076" cy="185" rx="17" ry="40" transform="rotate(-26 1076 185)"/><ellipse cx="1111" cy="228" rx="15" ry="35" transform="rotate(50 1111 228)"/><ellipse cx="1027" cy="226" rx="15" ry="35" transform="rotate(-38 1027 226)"/>
+    </g>
+    <g fill="#06441f">
+      <ellipse cx="389" cy="271" rx="14" ry="34" transform="rotate(35 389 271)"/><ellipse cx="322" cy="281" rx="14" ry="34" transform="rotate(-72 322 281)"/>
+      <ellipse cx="1059" cy="271" rx="14" ry="34" transform="rotate(-35 1059 271)"/><ellipse cx="1126" cy="281" rx="14" ry="34" transform="rotate(72 1126 281)"/>
+    </g>
+    <path d="M275 240c-72 15-97-27-58-57 46-34 89 8 43 42" fill="none" stroke="#a4650d" stroke-width="8" stroke-linecap="round"/>
+    <path d="M1173 240c72 15 97-27 58-57-46-34-89 8-43 42" fill="none" stroke="#a4650d" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <g filter="url(#soft)">
+    <ellipse cx="708" cy="215" rx="210" ry="82" fill="#fff0a6" stroke="#8a4b07" stroke-width="7"/>
+    <path d="M500 215v116c0 58 93 103 208 103s208-45 208-103V215c-20 54-102 86-208 86s-188-32-208-86z" fill="url(#cheese)" stroke="#8a4b07" stroke-width="7"/>
+    <ellipse cx="708" cy="213" rx="188" ry="62" fill="#ffd65a" stroke="#c27406" stroke-width="5"/>
+    <path d="M704 214l285 72-158 157z" fill="#c87808" stroke="#733d02" stroke-width="8"/>
+    <path d="M792 255l197 45-147 118z" fill="#ffe18b" stroke="#9d5e06" stroke-width="5"/>
+    <path d="M823 316h160l78 40v130H850l-78-40V343z" fill="url(#cheese)" stroke="#7a4305" stroke-width="7"/>
+    <path d="M823 316l-51 27 78 40 211-27-78-40z" fill="#ffe18b" stroke="#9d5e06" stroke-width="5"/>
+    <g fill="#b16303" stroke="#fff1a8" stroke-width="3">
+      <circle cx="872" cy="390" r="13"/><circle cx="925" cy="379" r="9"/><circle cx="1000" cy="423" r="16"/><circle cx="897" cy="457" r="10"/><circle cx="960" cy="464" r="12"/><circle cx="870" cy="292" r="10"/><circle cx="921" cy="307" r="14"/><circle cx="829" cy="352" r="9"/>
+    </g>
+    <g class="line"><path d="M535 236c70 18 220 22 340 0"/><path d="M523 260c90 28 236 29 374 0"/><path d="M525 290c76 30 260 35 372 0"/><path d="M526 325c78 31 240 35 360 0"/></g>
+  </g>
+  <g filter="url(#shadow)">
+    <text class="title" x="724" y="568" text-anchor="middle" fill="#fffaf0" stroke="#063a21" stroke-width="26" paint-order="stroke">Queijos WR</text>
+    <text class="title" x="724" y="568" text-anchor="middle" fill="#fffaf0" stroke="url(#gold)" stroke-width="6" paint-order="stroke">Queijos WR</text>
+  </g>
+  <g filter="url(#shadow)">
+    <path d="M127 620L13 694l96 107 96-26v-124z" fill="url(#green)" stroke="#d99b20" stroke-width="9"/>
+    <path d="M1321 620l114 74-96 107-96-26v-124z" fill="url(#green)" stroke="#d99b20" stroke-width="9"/>
+    <path d="M137 619c375-55 799-55 1174 0l-50 150c-342-54-732-54-1074 0z" fill="url(#green)" stroke="#d99b20" stroke-width="10"/>
+    <path d="M149 645c363-47 788-47 1150 0M176 742c350-41 745-41 1097 0" fill="none" stroke="#ffd361" stroke-width="6"/>
+    <ellipse cx="148" cy="769" rx="79" ry="31" transform="rotate(-12 148 769)" fill="#06341e" stroke="#d99b20" stroke-width="8"/>
+    <ellipse cx="1300" cy="769" rx="79" ry="31" transform="rotate(12 1300 769)" fill="#06341e" stroke="#d99b20" stroke-width="8"/>
+    <text class="slogan" x="724" y="725" text-anchor="middle" fill="#fffdf7" stroke="#11301f" stroke-width="2" paint-order="stroke">SABOR E TRADIÇÃO DE FAMÍLIA</text>
+    <circle cx="214" cy="696" r="13" fill="#f4b51d" stroke="#fff0a6" stroke-width="3"/>
+    <circle cx="1234" cy="696" r="13" fill="#f4b51d" stroke="#fff0a6" stroke-width="3"/>
+  </g>
+  <g filter="url(#soft)" fill="none" stroke="url(#gold)" stroke-linecap="round">
+    <path d="M360 837c80 44 153 7 99-36-47-38-91 44-19 62" stroke-width="12"/>
+    <path d="M1088 837c-80 44-153 7-99-36 47-38 91 44 19 62" stroke-width="12"/>
+    <path d="M513 832c71 88 158 42 112-20-39-53-91 38-13 68" stroke-width="12"/>
+    <path d="M935 832c-71 88-158 42-112-20 39-53 91 38 13 68" stroke-width="12"/>
+  </g>
+  <path d="M724 800c-14 28-40 40-40 72 0 24 18 39 32 49v66h16v-66c14-10 32-25 32-49 0-32-26-44-40-72z" fill="url(#gold)" stroke="#8a4b07" stroke-width="5"/>
+  <path d="M724 800c-1-40 24-64 51-75-11 31-14 58-37 82zM724 800c1-40-24-64-51-75 11 31 14 58 37 82z" fill="url(#gold)" stroke="#8a4b07" stroke-width="5"/>
+</svg>
