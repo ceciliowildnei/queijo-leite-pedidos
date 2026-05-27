@@ -1,0 +1,38 @@
+@media (max-width:1100px){
+  body{padding-bottom:0!important;}
+  .app{grid-template-columns:1fr!important;}
+  main{padding-bottom:34px!important;}
+  .hamb{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:38px!important;height:38px!important;background:#fffdf8!important;border:1px solid #eadfce!important;border-radius:12px!important;cursor:pointer!important;}
+  .mobile-backdrop{position:fixed!important;left:0!important;right:0!important;top:0!important;bottom:0!important;background:rgba(0,0,0,.32)!important;opacity:0!important;visibility:hidden!important;z-index:998!important;}
+  .app.menu-open~.mobile-backdrop{opacity:1!important;visibility:visible!important;}
+  aside{display:block!important;position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:min(310px,86vw)!important;height:100dvh!important;z-index:999!important;padding:18px 14px!important;background:#fffdf8!important;border-right:1px solid #eadfce!important;box-shadow:14px 0 35px rgba(72,51,26,.18)!important;overflow-y:auto!important;overflow-x:hidden!important;transform:translateX(-105%)!important;transition:transform .22s ease!important;}
+  .app.menu-open aside{transform:translateX(0)!important;}
+  .mobile-drawer-title{display:flex!important;align-items:center!important;justify-content:space-between!important;margin-bottom:14px!important;padding:8px 6px 14px!important;border-bottom:1px solid #eadfce!important;color:#1f5b35!important;font-size:18px!important;}
+  .mobile-drawer-title button{width:40px!important;height:40px!important;border-radius:12px!important;background:#f6efe2!important;color:#1f5b35!important;font-size:26px!important;border:0!important;}
+  .brand-logo{display:grid!important;height:120px!important;margin-bottom:12px!important;padding:0!important;place-items:center!important;}
+  .brand-logo img{max-width:180px!important;max-height:110px!important;width:auto!important;height:auto!important;}
+  .sidebar-foot{display:none!important;}
+  .menu{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;min-width:0!important;}
+  .menu button{height:52px!important;width:100%!important;min-width:0!important;padding:0 14px!important;border-radius:14px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;font-size:15px!important;white-space:nowrap!important;}
+  .menu button i{width:24px!important;font-size:18px!important;}
+  .menu button.active{background:#eef4e9!important;border:1px solid #d9dfcd!important;color:#1f5b35!important;}
+  .top{display:block!important;margin-bottom:16px!important;}
+  .top-actions{display:grid!important;grid-template-columns:1fr!important;max-width:none!important;margin-top:14px!important;gap:10px!important;}
+  .top-actions .sync,.top-actions .ghost,.delivery-date-picker input{width:100%!important;}
+  .filters{grid-template-columns:1fr!important;max-width:none!important;}
+  .entregas-layout{grid-template-columns:1fr!important;}
+  .modal{z-index:9999!important;align-items:flex-start!important;padding:14px!important;overflow-y:auto!important;}
+  .modal form{width:100%!important;max-width:680px!important;max-height:none!important;margin:12px 0 36px!important;grid-template-columns:1fr!important;padding:18px!important;overflow:visible!important;}
+  .modal input,.modal select{height:52px!important;font-size:16px!important;}
+  .actions{position:sticky!important;bottom:0!important;background:#fffdf8!important;padding-top:12px!important;z-index:2!important;}
+  .actions button{min-height:48px!important;flex:1!important;}
+}
+@media (max-width:720px){
+  main{padding:18px 14px 34px!important;}
+  .top h1{font-size:30px!important;}
+  .top p{font-size:14px!important;}
+  .delivery-row{grid-template-columns:32px 50px 1fr!important;padding:13px 14px!important;}
+  .delivery-row>div:nth-child(4),.delivery-row>div:nth-child(5),.delivery-row>strong,.delivery-row>.status-blue,.delivery-row>.view-btn{display:none!important;}
+  .table{overflow-x:auto!important;}
+  .table table{min-width:760px!important;}
+}
