@@ -1,0 +1,12 @@
+/* Remove definitivamente o fundo grande do resumo e aproxima as entregas */
+.entregas-layout{display:flex!important;flex-direction:column!important;gap:8px!important;margin-top:0!important}
+.entregas-layout .side-stack{order:1!important;position:static!important;width:100%!important;margin:0!important;padding:0!important;display:block!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.entregas-layout .entregas-main{order:2!important;margin-top:0!important;display:grid!important;gap:14px!important}
+.entregas-layout .side-stack>.panel{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0 0 4px!important;border-radius:0!important;overflow:visible!important;min-height:0!important}
+.entregas-layout .side-stack>.panel h3{display:none!important}
+.entregas-layout .summary-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.entregas-layout .summary-grid .card{background:#fffdf8!important;border:1px solid #eadfce!important;box-shadow:0 10px 24px rgba(72,51,26,.07)!important;border-radius:16px!important;min-height:66px!important;padding:10px 14px!important;margin:0!important}
+.entregas-layout .summary-grid .card span{font-size:12px!important;line-height:1.1!important;margin:0!important}
+.entregas-layout .summary-grid .card strong{font-size:22px!important;line-height:1.05!important;margin-top:4px!important}
+.entregas-layout .side-stack>.panel::after{display:none!important;content:none!important}
+@media(max-width:1100px){.entregas-layout .summary-grid{grid-template-columns:1fr 1fr!important}.entregas-layout .summary-grid .card:nth-child(3){grid-column:1/-1!important}}
