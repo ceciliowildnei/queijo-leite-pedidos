@@ -1,0 +1,6 @@
+/* Remove o número/código do pedido dentro dos cards de rotas */
+.route-card .delivery-row{grid-template-columns:32px 54px minmax(170px,1.25fr) 112px 92px 100px!important}
+.route-card .delivery-row>div:nth-child(4){display:none!important}
+.route-card .delivery-row>button.view-btn{display:none!important}
+@media(max-width:1380px){.route-card .delivery-row{grid-template-columns:30px 50px minmax(150px,1.25fr) 98px 82px 88px!important}}
+@media(max-width:1100px){.route-card .delivery-row{grid-template-columns:32px 50px minmax(0,1fr)!important}.route-card .delivery-row>div:nth-child(4),.route-card .delivery-row>div:nth-child(5),.route-card .delivery-row>strong,.route-card .delivery-row>.status-blue,.route-card .delivery-row>.view-btn{display:none!important}}
