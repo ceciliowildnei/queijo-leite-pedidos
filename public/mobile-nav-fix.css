@@ -1,11 +1,10 @@
-/* Navegação fixa e funcional entre abas no celular */
+/* Navegação simples e funcional entre abas no celular */
 .mobile-tabs-fix{display:none}
 @media(max-width:1100px){
-  .mobile-tabs-fix{display:block!important;margin:10px 0 14px!important;padding:10px!important;background:#fffdf8!important;border:1px solid #eadfce!important;border-radius:16px!important;box-shadow:0 8px 22px rgba(72,51,26,.08)!important}
-  .mobile-tab-select{width:100%!important;height:48px!important;border:1px solid #eadfce!important;border-radius:14px!important;background:#fff!important;color:#1f5b35!important;font-weight:800!important;padding:0 12px!important;font-size:15px!important;margin-bottom:10px!important}
-  .mobile-tab-buttons{display:flex!important;gap:8px!important;overflow-x:auto!important;padding-bottom:2px!important;-webkit-overflow-scrolling:touch!important}
-  .mobile-tab-btn{height:42px!important;min-width:max-content!important;border:1px solid #eadfce!important;border-radius:999px!important;background:#fff!important;color:#4b4237!important;font-weight:800!important;padding:0 14px!important;font-size:13px!important;white-space:nowrap!important}
-  .mobile-tab-btn.active{background:#e8f3e8!important;border-color:#cfe4cf!important;color:#1f5b35!important}
+  .mobile-tabs-fix{display:block!important;margin:10px 0 14px!important;padding:8px!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+  .mobile-tab-select{width:100%!important;height:48px!important;border:1px solid #eadfce!important;border-radius:14px!important;background:#fff!important;color:#1f5b35!important;font-weight:800!important;padding:0 12px!important;font-size:15px!important;margin:0!important}
+  .mobile-tab-buttons{display:none!important}
+  .mobile-tab-btn{display:none!important}
   aside{pointer-events:auto!important}
   aside .menu button{pointer-events:auto!important}
 }
