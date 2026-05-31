@@ -1,10 +1,16 @@
-/* Navegação simples e funcional entre abas no celular */
-.mobile-tabs-fix{display:none}
+/* Navegacao mobile estavel: barra inferior com os botoes reais do React */
+.mobile-tabs-fix{display:none!important}
 @media(max-width:1100px){
-  .mobile-tabs-fix{display:block!important;margin:10px 0 14px!important;padding:8px!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}
-  .mobile-tab-select{width:100%!important;height:48px!important;border:1px solid #eadfce!important;border-radius:14px!important;background:#fff!important;color:#1f5b35!important;font-weight:800!important;padding:0 12px!important;font-size:15px!important;margin:0!important}
-  .mobile-tab-buttons{display:none!important}
-  .mobile-tab-btn{display:none!important}
-  aside{pointer-events:auto!important}
-  aside .menu button{pointer-events:auto!important}
+  body{padding-bottom:96px!important;overflow-x:hidden!important}
+  .app{display:block!important;grid-template-columns:1fr!important}
+  aside{display:block!important;position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;width:100%!important;height:88px!important;min-height:0!important;z-index:2000!important;padding:8px 8px 10px!important;background:#fffdf8!important;border-top:1px solid #eadfce!important;border-right:0!important;box-shadow:0 -10px 28px rgba(72,51,26,.16)!important;overflow-x:auto!important;overflow-y:hidden!important;transform:none!important;transition:none!important;-webkit-overflow-scrolling:touch!important;pointer-events:auto!important}
+  .app.menu-open aside,.app.menu-collapsed aside{transform:none!important}
+  .mobile-drawer-title,.brand-logo,.sidebar-foot{display:none!important}
+  aside .menu{display:flex!important;flex-direction:row!important;gap:8px!important;min-width:max-content!important;overflow:visible!important;height:100%!important;align-items:center!important}
+  aside .menu button{height:64px!important;min-width:94px!important;width:auto!important;padding:7px 10px!important;border-radius:16px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;font-size:12px!important;line-height:1.1!important;white-space:nowrap!important;pointer-events:auto!important;touch-action:manipulation!important;color:#3f372e!important;background:transparent!important;border:1px solid transparent!important}
+  aside .menu button i{width:auto!important;font-size:17px!important;color:#b77b22!important;line-height:1!important}
+  aside .menu button.active{background:#eef4e9!important;border:1px solid #d9dfcd!important;color:#1f5b35!important;box-shadow:0 6px 14px rgba(31,91,53,.08)!important}
+  main{padding-bottom:112px!important}
+  .modal{z-index:9999!important;padding-bottom:104px!important}
+  .modal form{margin-bottom:112px!important}
 }
