@@ -1,0 +1,53 @@
+name: Gerar APK Queijos WR
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - agent/android-apk
+    paths:
+      - "android/**"
+      - ".github/workflows/android-apk.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "android/**"
+      - ".github/workflows/android-apk.yml"
+
+jobs:
+  gerar-apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Preparar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Preparar Android
+        uses: android-actions/setup-android@v3
+
+      - name: Instalar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Preparar ícone oficial
+        run: base64 --decode android/app-icon.b64 > android/app/src/main/res/drawable/queijos_wr_launcher.png
+
+      - name: Compilar APK
+        working-directory: android
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Disponibilizar instalador
+        uses: actions/upload-artifact@v4
+        with:
+          name: Queijos-WR-Mobile-v2
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
