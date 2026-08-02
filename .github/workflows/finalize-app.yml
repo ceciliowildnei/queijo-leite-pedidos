@@ -1,0 +1,39 @@
+name: Finalizar aplicativo Queijos WR
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - agent/android-apk
+    paths:
+      - "scripts/finalize_app.py"
+      - ".github/workflows/finalize-app.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  finalizar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+        with:
+          ref: agent/android-apk
+          fetch-depth: 0
+
+      - name: Aplicar correções finais
+        run: python3 scripts/finalize_app.py
+
+      - name: Validar build web
+        run: |
+          npm install
+          npm run build
+
+      - name: Publicar alterações
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Finaliza aplicativo Queijos WR 2.1"
+          git push origin agent/android-apk
