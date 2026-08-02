@@ -19,7 +19,7 @@ const DEFAULT_ROUTES = ['Rota 01 - Zona Rural', 'Rota 02 - Centro', 'Rota 03 - V
 const CASH_KEY = 'wr_caixa_saidas';
 const PHOTO_KEY = 'wr_client_photos_v1';
 const LOG_KEY = 'wr_audit_logs_v1';
-const VERSION = '2.0.0';
+const VERSION = '3.0.0';
 
 const TABLES = {
   clientes: 'wr_clientes',
