@@ -3,6 +3,12 @@ import { createRoot } from 'react-dom/client';
 import { createClient } from '@supabase/supabase-js';
 import './style.css';
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(error => console.warn('Service Worker:', error));
+  });
+}
+
 const supabase = createClient(
   'https://ywwztahbqgiwervbwudg.supabase.co',
   'sb_publishable_er0Z1O0s1opKniqu3cYkGg_svVBvXRx'
@@ -34,10 +40,13 @@ const NAV_ITEMS = [
   ['pdfs', 'PDFs e comprovantes', 'pdf'],
 ];
 
+const COLLABORATOR_NAV_KEYS = new Set(['dashboard', 'clientes', 'pedidos', 'entregas']);
+
 const money = value => Number(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const number = value => Number(value || 0);
 const onlyDigits = value => String(value || '').replace(/\D/g, '');
 const normalize = value => String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+const hasFullAccess = user => normalize(user?.papel).includes('adm');
 const isoToday = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
 const brDate = value => value ? String(value).slice(0, 10).split('-').reverse().join('/') : '—';
 const sum = (items, key) => items.reduce((total, item) => total + number(item[key]), 0);
@@ -116,11 +125,14 @@ function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('wr_theme') || 'light');
   const [searchOpen, setSearchOpen] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState(null);
   const [routes, setRoutes] = useState(() => readLocal('wr_rotas', DEFAULT_ROUTES));
   const [cashOuts, setCashOuts] = useState(() => readLocal(CASH_KEY, []));
   const [photos, setPhotos] = useState(() => readLocal(PHOTO_KEY, {}));
   const [logs, setLogs] = useState(() => readLocal(LOG_KEY, []));
   const [db, setDb] = useState({ clientes: [], produtos: [], pedidos: [], admins: [] });
+  const fullAccess = hasFullAccess(admin);
+  const visibleNavItems = fullAccess ? NAV_ITEMS : NAV_ITEMS.filter(([key]) => COLLABORATOR_NAV_KEYS.has(key));
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -128,8 +140,26 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
+    const beforeInstall = event => {
+      event.preventDefault();
+      setInstallPrompt(event);
+    };
+    const installed = () => setInstallPrompt(null);
+    window.addEventListener('beforeinstallprompt', beforeInstall);
+    window.addEventListener('appinstalled', installed);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', beforeInstall);
+      window.removeEventListener('appinstalled', installed);
+    };
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem('wr_menu_collapsed', collapsed ? '1' : '0');
   }, [collapsed]);
+
+  useEffect(() => {
+    if (admin && !visibleNavItems.some(([key]) => key === tab)) setTab('dashboard');
+  }, [admin, tab, fullAccess]);
 
   useEffect(() => {
     if (!admin) return undefined;
@@ -159,8 +189,8 @@ function App() {
     db.clientes.filter(item => normalize(JSON.stringify(item)).includes(text)).slice(0, 5).forEach(item => results.push({ type: 'Cliente', tab: 'clientes', title: item.nome || 'Cliente', subtitle: formatPhone(item.telefone) }));
     db.produtos.filter(item => normalize(JSON.stringify(item)).includes(text)).slice(0, 5).forEach(item => results.push({ type: 'Produto', tab: 'produtos', title: item.nome || 'Produto', subtitle: money(item.preco) }));
     db.pedidos.filter(item => normalize(JSON.stringify(item)).includes(text)).slice(0, 8).forEach(item => results.push({ type: 'Pedido', tab: 'pedidos', title: item.cliente_nome || item.codigo || 'Pedido', subtitle: `${item.produto_nome || ''} · ${money(item.total)}` }));
-    return results.slice(0, 12);
-  }, [query, db]);
+    return results.filter(result => visibleNavItems.some(([key]) => key === result.tab)).slice(0, 12);
+  }, [query, db, fullAccess]);
 
   function addLog(action, detail) {
     const entry = { id: crypto.randomUUID?.() || String(Date.now()), date: new Date().toISOString(), user: admin?.nome || 'Sistema', action, detail };
@@ -216,7 +246,9 @@ function App() {
     if (response.error) return setError(response.error.message);
     addLog(id ? 'Registro atualizado' : 'Registro criado', `${type}: ${payload.nome || payload.codigo || payload.cliente_nome || id || 'novo'}`);
     setModal(null);
-    setNotice('Alterações salvas e sincronizadas.');
+    setNotice(type === 'clientes'
+      ? 'Cliente salvo e sincronizado. Nenhuma mensagem foi enviada pelo WhatsApp.'
+      : 'Alterações salvas e sincronizadas.');
     await sync(true);
   }
 
@@ -315,9 +347,20 @@ function App() {
   }
 
   function selectTab(nextTab) {
+    if (!visibleNavItems.some(([key]) => key === nextTab)) {
+      setError('Seu perfil não possui acesso a esta área.');
+      return;
+    }
     setTab(nextTab);
     setMobileOpen(false);
     setSearchOpen(false);
+  }
+
+  async function installApp() {
+    if (!installPrompt) return;
+    await installPrompt.prompt();
+    await installPrompt.userChoice;
+    setInstallPrompt(null);
   }
 
   function logout() {
@@ -332,13 +375,15 @@ function App() {
     db, query, selectedDate, selectedOrders, todayOrders, weekOrders, routes, cashOuts, photos, logs,
     setQuery, setSelectedDate, setModal, saveEntity, deleteEntity, updateOrder, getClientPhoto,
     saveClientPhoto, deleteCashOut, selectTab, sync, loading, admin,
+    canDelete: fullAccess, canManage: fullAccess,
   };
 
   return (
     <div className={`app-shell ${collapsed ? 'sidebar-collapsed' : ''} ${mobileOpen ? 'mobile-menu-open' : ''}`}>
-      <Sidebar tab={tab} onSelect={selectTab} collapsed={collapsed} setCollapsed={setCollapsed} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+      <Sidebar items={visibleNavItems} tab={tab} onSelect={selectTab} collapsed={collapsed} setCollapsed={setCollapsed} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
       <main className="app-main">
         <Topbar
+          items={visibleNavItems}
           tab={tab}
           query={query}
           setQuery={setQuery}
@@ -354,6 +399,8 @@ function App() {
           setTheme={setTheme}
           admin={admin}
           logout={logout}
+          installPrompt={installPrompt}
+          installApp={installApp}
           openMobile={() => setMobileOpen(true)}
         />
         <div className="page-content">
@@ -361,13 +408,13 @@ function App() {
           {error && <Alert tone="danger" onClose={() => setError('')}>{error}</Alert>}
           {tab === 'dashboard' && <Dashboard {...pageProps} />}
           {tab === 'clientes' && <ClientsPage {...pageProps} />}
-          {tab === 'produtos' && <ProductsPage {...pageProps} />}
+          {fullAccess && tab === 'produtos' && <ProductsPage {...pageProps} />}
           {tab === 'pedidos' && <OrdersPage {...pageProps} />}
           {tab === 'entregas' && <DeliveriesPage {...pageProps} />}
-          {tab === 'caixa' && <CashPage {...pageProps} />}
-          {tab === 'relatorios' && <ReportsPage {...pageProps} />}
-          {tab === 'administracao' && <AdminPage {...pageProps} />}
-          {tab === 'pdfs' && <DocumentsPage {...pageProps} />}
+          {fullAccess && tab === 'caixa' && <CashPage {...pageProps} />}
+          {fullAccess && tab === 'relatorios' && <ReportsPage {...pageProps} />}
+          {fullAccess && tab === 'administracao' && <AdminPage {...pageProps} />}
+          {fullAccess && tab === 'pdfs' && <DocumentsPage {...pageProps} />}
         </div>
       </main>
       {modal && (
@@ -421,7 +468,7 @@ function Login({ login, setLogin, onSubmit, error, loading }) {
   );
 }
 
-function Sidebar({ tab, onSelect, collapsed, setCollapsed, mobileOpen, setMobileOpen }) {
+function Sidebar({ items, tab, onSelect, collapsed, setCollapsed, mobileOpen, setMobileOpen }) {
   return (
     <>
       <div className={`sidebar-backdrop ${mobileOpen ? 'show' : ''}`} onClick={() => setMobileOpen(false)} />
@@ -429,7 +476,7 @@ function Sidebar({ tab, onSelect, collapsed, setCollapsed, mobileOpen, setMobile
         <div className="sidebar-brand"><img src={LOGO} alt="Queijos WR" /><div><strong>Queijos WR</strong><span>ERP Gestão</span></div></div>
         <button className="sidebar-collapse" type="button" onClick={() => setCollapsed(value => !value)} aria-label="Recolher menu"><span>‹</span></button>
         <nav className="sidebar-nav">
-          {NAV_ITEMS.map(([key, label, icon]) => (
+          {items.map(([key, label, icon]) => (
             <button key={key} type="button" className={tab === key ? 'active' : ''} onClick={() => onSelect(key)} title={label}>
               <span className="nav-icon"><Icon name={icon} /></span><span className="nav-label">{label}</span>
             </button>
@@ -441,8 +488,8 @@ function Sidebar({ tab, onSelect, collapsed, setCollapsed, mobileOpen, setMobile
   );
 }
 
-function Topbar({ tab, query, setQuery, searchOpen, setSearchOpen, searchResults, onResult, selectedDate, setSelectedDate, sync, loading, theme, setTheme, admin, logout, openMobile }) {
-  const title = NAV_ITEMS.find(item => item[0] === tab)?.[1] || 'ERP';
+function Topbar({ items, tab, query, setQuery, searchOpen, setSearchOpen, searchResults, onResult, selectedDate, setSelectedDate, sync, loading, theme, setTheme, admin, logout, installPrompt, installApp, openMobile }) {
+  const title = items.find(item => item[0] === tab)?.[1] || 'ERP';
   return (
     <header className="topbar">
       <div className="topbar-title"><button className="mobile-menu-btn" onClick={openMobile} type="button">☰</button><div><span className="eyebrow">Queijos WR ERP</span><h1>{title}</h1></div></div>
@@ -451,6 +498,7 @@ function Topbar({ tab, query, setQuery, searchOpen, setSearchOpen, searchResults
         {searchOpen && query && <div className="search-popover">{searchResults.length ? searchResults.map((result, index) => <button type="button" key={`${result.type}-${index}`} onClick={() => onResult(result)}><span className="search-type">{result.type}</span><strong>{result.title}</strong><small>{result.subtitle}</small></button>) : <div className="search-empty">Nenhum resultado encontrado.</div>}</div>}
       </div>
       <div className="topbar-actions">
+        {installPrompt && <button className="btn btn-secondary install-app-btn" type="button" onClick={installApp}>Instalar no computador</button>}
         <label className="date-control"><span>Data operacional</span><input type="date" value={selectedDate} onChange={event => setSelectedDate(event.target.value)} /></label>
         <button className="icon-btn sync-btn" type="button" onClick={sync} title="Sincronizar">{loading ? <Spinner /> : '↻'}</button>
         <button className="icon-btn notification-btn" type="button" title="Notificações">♢<span>3</span></button>
@@ -461,7 +509,7 @@ function Topbar({ tab, query, setQuery, searchOpen, setSearchOpen, searchResults
   );
 }
 
-function Dashboard({ db, todayOrders, weekOrders, selectedOrders, selectedDate, cashOuts, setModal, selectTab }) {
+function Dashboard({ db, todayOrders, weekOrders, selectedOrders, selectedDate, cashOuts, setModal, selectTab, canManage }) {
   const paid = selectedOrders.filter(order => normalize(order.status_pagamento).includes('pago'));
   const outputs = cashOuts.filter(item => item.data === selectedDate);
   const metrics = {
@@ -494,7 +542,7 @@ function Dashboard({ db, todayOrders, weekOrders, selectedOrders, selectedDate, 
 
   return (
     <div className="page-stack">
-      <PageHeader title="Visão geral" subtitle={`Indicadores consolidados para ${brDate(selectedDate)}.`} actions={<><button className="btn btn-secondary" onClick={() => setModal({ type: 'routes' })}>Gerenciar rotas</button><button className="btn btn-primary" onClick={() => setModal({ type: 'order-cart' })}>+ Novo pedido</button></>} />
+      <PageHeader title="Visão geral" subtitle={`Indicadores consolidados para ${brDate(selectedDate)}.`} actions={<>{canManage && <button className="btn btn-secondary" onClick={() => setModal({ type: 'routes' })}>Gerenciar rotas</button>}<button className="btn btn-primary" onClick={() => setModal({ type: 'order-cart' })}>+ Novo pedido</button></>} />
       <div className="metric-grid metric-grid-large">
         <MetricCard label="Receita do dia" value={money(metrics.todayRevenue)} icon="R$" trend="Atualizado agora" tone="green" />
         <MetricCard label="Receita da semana" value={money(metrics.weekRevenue)} icon="↗" trend="Segunda a domingo" tone="gold" />
@@ -516,7 +564,7 @@ function Dashboard({ db, todayOrders, weekOrders, selectedOrders, selectedDate, 
   );
 }
 
-function ClientsPage({ db, query, setQuery, setModal, deleteEntity, getClientPhoto, saveClientPhoto }) {
+function ClientsPage({ db, query, setQuery, setModal, deleteEntity, getClientPhoto, saveClientPhoto, canDelete }) {
   const [district, setDistrict] = useState('todos');
   const districts = [...new Set(db.clientes.map(client => client.bairro).filter(Boolean))].sort();
   const filtered = db.clientes.filter(client => {
@@ -533,7 +581,7 @@ function ClientsPage({ db, query, setQuery, setModal, deleteEntity, getClientPho
         client.bairro || '—',
         addressOf(client) || '—',
         client.observacoes || '—',
-        <TableActions key={`a-${client.id}`}><button onClick={() => setModal({ type: 'client-history', client })}>Histórico</button><button onClick={() => setModal({ type: 'entity', entity: 'clientes', item: client })}>Editar</button><button className="danger-link" onClick={() => deleteEntity('clientes', client.id, client.nome)}>Excluir</button></TableActions>,
+        <TableActions key={`a-${client.id}`}><button onClick={() => setModal({ type: 'client-history', client })}>Histórico</button><button onClick={() => setModal({ type: 'entity', entity: 'clientes', item: client })}>Editar</button>{canDelete && <button className="danger-link" onClick={() => deleteEntity('clientes', client.id, client.nome)}>Excluir</button>}</TableActions>,
       ])} empty="Nenhum cliente encontrado." />
     </div>
   );
@@ -551,7 +599,7 @@ function ProductsPage({ db, query, setQuery, setModal, deleteEntity }) {
   );
 }
 
-function OrdersPage({ db, query, setQuery, selectedOrders, selectedDate, setModal, deleteEntity, updateOrder, routes }) {
+function OrdersPage({ db, query, setQuery, selectedOrders, selectedDate, setModal, deleteEntity, updateOrder, routes, canDelete }) {
   const [status, setStatus] = useState('todos');
   const filtered = selectedOrders.filter(order => (!query || normalize(JSON.stringify(order)).includes(normalize(query))) && (status === 'todos' || normalize(order.status_pedido) === normalize(status)));
   return (
@@ -567,13 +615,13 @@ function OrdersPage({ db, query, setQuery, selectedOrders, selectedDate, setModa
         routeOf(order, routes),
         <Status key={`p-${order.id}`} value={order.status_pagamento} />,
         <Status key={`s-${order.id}`} value={order.status_pedido} />,
-        <TableActions key={`a-${order.id}`}><button onClick={() => updateOrder(order.id, { status_pagamento: 'Pago' }, 'Pagamento confirmado')}>Pago</button><button onClick={() => setModal({ type: 'entity', entity: 'pedidos', item: order })}>Editar</button><button onClick={() => printReceipt(order, db.pedidos)}>PDF</button><button className="danger-link" onClick={() => deleteEntity('pedidos', order.id, order.codigo)}>Excluir</button></TableActions>,
+        <TableActions key={`a-${order.id}`}><button onClick={() => updateOrder(order.id, { status_pagamento: 'Pago' }, 'Pagamento confirmado')}>Pago</button><button onClick={() => setModal({ type: 'entity', entity: 'pedidos', item: order })}>Editar</button><button onClick={() => printReceipt(order, db.pedidos)}>PDF</button>{canDelete && <button className="danger-link" onClick={() => deleteEntity('pedidos', order.id, order.codigo)}>Excluir</button>}</TableActions>,
       ])} empty="Nenhum pedido nesta data." />
     </div>
   );
 }
 
-function DeliveriesPage({ selectedOrders, selectedDate, query, setQuery, routes, updateOrder, setModal }) {
+function DeliveriesPage({ selectedOrders, selectedDate, query, setQuery, routes, updateOrder, setModal, canManage }) {
   const [selected, setSelected] = useState(null);
   const visible = selectedOrders.filter(order => !query || normalize(JSON.stringify(order)).includes(normalize(query)));
   const pending = visible.filter(order => normalize(order.status_pedido) !== 'entregue');
@@ -582,7 +630,7 @@ function DeliveriesPage({ selectedOrders, selectedDate, query, setQuery, routes,
   const mapUrl = active?.endereco ? `https://www.google.com/maps?q=${encodeURIComponent(active.endereco)}&output=embed` : '';
   return (
     <div className="page-stack">
-      <PageHeader title="Entregas" subtitle={`Roteiro operacional de ${brDate(selectedDate)}.`} actions={<><button className="btn btn-secondary" onClick={() => setModal({ type: 'routes' })}>Rotas</button><button className="btn btn-primary" onClick={() => printDeliveryList(pending, selectedDate, routes)}>Imprimir roteiro</button></>} />
+      <PageHeader title="Entregas" subtitle={`Roteiro operacional de ${brDate(selectedDate)}.`} actions={<>{canManage && <button className="btn btn-secondary" onClick={() => setModal({ type: 'routes' })}>Rotas</button>}<button className="btn btn-primary" onClick={() => printDeliveryList(pending, selectedDate, routes)}>Imprimir roteiro</button></>} />
       <div className="delivery-summary"><MiniMetric label="Pendentes" value={pending.length} /><MiniMetric label="Valor em rota" value={money(sum(pending, 'total'))} /><MiniMetric label="Quantidade" value={sum(pending, 'quantidade')} /><SearchInput value={query} onChange={setQuery} placeholder="Buscar cliente ou endereço..." /></div>
       <div className="deliveries-layout">
         <section className="route-list">{groups.map(group => <Panel key={group.route} className="route-panel" title={group.route} action={<span className="route-count">{group.orders.length} entrega(s)</span>}>{group.orders.map((order, index) => <article className={`delivery-item ${active?.id === order.id ? 'selected' : ''}`} key={order.id} onClick={() => setSelected(order)}><div className="delivery-index">{index + 1}</div><div className="delivery-client"><strong>{order.cliente_nome}</strong><span>{order.endereco || 'Endereço não informado'}</span><small>{order.produto_nome} · {order.quantidade} un.</small></div><div className="delivery-value"><strong>{money(order.total)}</strong><Status value={order.status_pedido} /></div><div className="delivery-actions"><button onClick={event => { event.stopPropagation(); updateOrder(order.id, { status_pedido: 'Em rota' }, 'Pedido saiu para entrega'); }}>Em rota</button><button className="primary-link" onClick={event => { event.stopPropagation(); updateOrder(order.id, { status_pedido: 'Entregue' }, 'Pedido entregue'); }}>Entregue</button></div></article>)}</Panel>)}{!groups.length && <EmptyState title="Nenhuma entrega pendente" text="Todos os pedidos desta data já foram entregues." />}</section>
@@ -652,7 +700,7 @@ function ReportsPage({ db, selectedOrders, selectedDate, routes }) {
 function AdminPage({ db, logs, setModal, deleteEntity, admin }) {
   const roles = [
     { role: 'ADM Geral', description: 'Acesso total ao sistema, usuários, caixa e relatórios.' },
-    { role: 'Colaborador', description: 'Acesso operacional a clientes, produtos, pedidos e entregas.' },
+    { role: 'Colaborador', description: 'Pode cadastrar e editar clientes e pedidos, além de acompanhar entregas. Sem acesso ao caixa ou à administração.' },
   ];
   return (
     <div className="page-stack">
@@ -704,7 +752,7 @@ function EntityForm({ modal, close, db, routes, selectedDate, save }) {
   }
   return (
     <Modal title={`${item.id ? 'Editar' : 'Novo'} ${title}`} close={close}><form className="form-grid" onSubmit={submit}>
-      {entity === 'clientes' && <><Field label="Nome" required value={form.nome} onChange={value => set('nome', value)} /><Field label="Telefone" value={form.telefone} onChange={value => set('telefone', value)} /><Field label="Bairro" value={form.bairro} onChange={value => set('bairro', value)} /><Field label="Rua" value={form.rua} onChange={value => set('rua', value)} /><Field label="Número" value={form.numero} onChange={value => set('numero', value)} /><Field label="Cidade" value={form.cidade} onChange={value => set('cidade', value)} /><Field label="Estado" value={form.estado} onChange={value => set('estado', value)} /><Field className="full" label="Observações" value={form.observacoes} onChange={value => set('observacoes', value)} /></>}
+      {entity === 'clientes' && <><div className="form-note full"><strong>Cadastro sem disparo:</strong> ao salvar, o cliente será apenas cadastrado. Nenhuma mensagem será enviada pelo WhatsApp.</div><Field label="Nome" required value={form.nome} onChange={value => set('nome', value)} /><Field label="Telefone" value={form.telefone} onChange={value => set('telefone', value)} /><Field label="Bairro" value={form.bairro} onChange={value => set('bairro', value)} /><Field label="Rua" value={form.rua} onChange={value => set('rua', value)} /><Field label="Número" value={form.numero} onChange={value => set('numero', value)} /><Field label="Cidade" value={form.cidade} onChange={value => set('cidade', value)} /><Field label="Estado" value={form.estado} onChange={value => set('estado', value)} /><Field className="full" label="Observações" value={form.observacoes} onChange={value => set('observacoes', value)} /></>}
       {entity === 'produtos' && <><Field label="Produto" required value={form.nome} onChange={value => set('nome', value)} /><Field label="Unidade" value={form.unidade} onChange={value => set('unidade', value)} /><Field label="Preço" type="number" step="0.01" value={form.preco} onChange={value => set('preco', value)} /><ToggleField label="Produto ativo" checked={form.ativo} onChange={value => set('ativo', value)} /></>}
       {entity === 'admins' && <><Field label="Nome" required value={form.nome} onChange={value => set('nome', value)} /><Field label="Telefone" required value={form.telefone} onChange={value => set('telefone', value)} /><Field label="PIN" required value={form.pin || ''} onChange={value => set('pin', value)} /><SelectField label="Papel" value={form.papel || 'Colaborador'} onChange={value => set('papel', value)} options={['ADM Geral', 'Colaborador']} /><ToggleField label="Usuário ativo" checked={form.ativo} onChange={value => set('ativo', value)} /></>}
       {entity === 'pedidos' && <><SelectField label="Cliente" value={form.cliente_id || ''} onChange={value => set('cliente_id', value)} options={db.clientes.map(client => [client.id, client.nome])} /><SelectField label="Produto" value={form.produto_id || ''} onChange={value => { const product = db.produtos.find(entry => String(entry.id) === String(value)); setForm(current => ({ ...current, produto_id: value, preco_unitario: product?.preco || current.preco_unitario, total: number(product?.preco || current.preco_unitario) * number(current.quantidade || 1) })); }} options={db.produtos.map(product => [product.id, product.nome])} /><Field label="Quantidade" type="number" value={form.quantidade || 1} onChange={value => set('quantidade', value)} /><Field label="Valor total" type="number" step="0.01" value={form.total || ''} onChange={value => set('total', value)} /><SelectField label="Rota" value={form.rota || routes[0]} onChange={value => set('rota', value)} options={routes} /><Field label="Data de entrega" type="date" value={form.data_entrega || selectedDate} onChange={value => set('data_entrega', value)} /><SelectField label="Pagamento" value={form.status_pagamento || 'Pendente'} onChange={value => set('status_pagamento', value)} options={['Pendente', 'Pago']} /><SelectField label="Status" value={form.status_pedido || 'Separado'} onChange={value => set('status_pedido', value)} options={['Separado', 'Em rota', 'Entregue']} /><Field className="full" label="Endereço" value={form.endereco || ''} onChange={value => set('endereco', value)} /><Field className="full" label="Observações" value={form.observacoes || ''} onChange={value => set('observacoes', value)} /></>}
