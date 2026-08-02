@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Instalar dependências",
+      "type": "shell",
+      "command": "npm install",
+      "problemMatcher": []
+    },
+    {
+      "label": "Iniciar Queijos WR",
+      "type": "shell",
+      "command": "npm run dev -- --host 0.0.0.0",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": {
+          "regexp": ".*"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": ".*Local:.*http://localhost:5173.*"
+        }
+      },
+      "dependsOn": "Instalar dependências"
+    },
+    {
+      "label": "Gerar versão final",
+      "type": "shell",
+      "command": "npm run build",
+      "problemMatcher": [],
+      "dependsOn": "Instalar dependências"
+    }
+  ]
+}
