@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private static final int FILE_CHOOSER_REQUEST = 1001;
-    private static final String APP_HOST = "queijos-wr-pedidos.workspace-332958.chatgpt.site";
+    private static final String APP_HOST = "ceciliowildnei-queijo-leite-pedidos.vercel.app";
     private WebView webView;
     private ValueCallback<Uri[]> fileCallback;
 
