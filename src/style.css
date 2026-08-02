@@ -133,3 +133,38 @@
     min-height: 44px;
   }
 }
+
+
+/* Feedback explícito do cadastro e instalação pelo navegador. */
+.form-note {
+  padding: 11px 13px;
+  border: 1px solid rgba(31,107,59,.24);
+  border-radius: 11px;
+  background: rgba(31,107,59,.08);
+  color: var(--text);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.form-note strong {
+  color: var(--green);
+}
+
+.install-app-btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 680px) {
+  .install-app-btn {
+    flex: 0 0 auto;
+  }
+
+  .topbar-actions .date-control {
+    flex: 0 0 auto;
+  }
+
+  .topbar-actions {
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+  }
+}

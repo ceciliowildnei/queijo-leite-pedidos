@@ -1,0 +1,20 @@
+{
+  "name": "Queijos WR Pedidos",
+  "short_name": "Queijos WR",
+  "description": "Gestão de clientes, pedidos e entregas da Queijos WR.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f4f7f4",
+  "theme_color": "#123d27",
+  "lang": "pt-BR",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/wr-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
