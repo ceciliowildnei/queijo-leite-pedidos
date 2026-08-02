@@ -38,6 +38,9 @@ jobs:
         with:
           gradle-version: "8.9"
 
+      - name: Preparar ícone oficial
+        run: base64 --decode android/app-icon.b64 > android/app/src/main/res/drawable/queijos_wr_launcher.png
+
       - name: Compilar APK
         working-directory: android
         run: gradle :app:assembleDebug --stacktrace
@@ -45,6 +48,6 @@ jobs:
       - name: Disponibilizar instalador
         uses: actions/upload-artifact@v4
         with:
-          name: Queijos-WR-APK
+          name: Queijos-WR-Mobile-v2
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
