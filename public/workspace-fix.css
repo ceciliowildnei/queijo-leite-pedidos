@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --wr-forest:#0f4a30;
+  --wr-forest-dark:#0a3523;
+  --wr-cream:#f5f0e5;
+  --wr-paper:#fffdf8;
+  --wr-gold:#b98525;
+  --wr-gold-soft:#d9b45c;
+  --wr-text:#173526;
+  --wr-muted:#788078;
+  --wr-line:#e5ddcf;
+  --wr-shadow:0 18px 46px rgba(29,57,42,.10);
+}
+
+html,body,#root{background:var(--wr-cream)!important;color:var(--wr-text)!important}
+body{font-family:Inter,system-ui,sans-serif!important}
+
+/* LOGIN - copia do layout aprovado */
+.login-page{
+  min-height:100vh!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,58%) minmax(420px,42%)!important;
+  background:var(--wr-cream)!important;
+  overflow:hidden!important;
+}
+.login-visual{
+  position:relative!important;
+  min-height:100vh!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:
+    repeating-linear-gradient(118deg,rgba(255,255,255,.035) 0 2px,transparent 2px 46px),
+    linear-gradient(145deg,#0a3523 0%,#15583a 100%)!important;
+  overflow:hidden!important;
+}
+.login-visual::after{
+  content:"";
+  position:absolute;
+  inset:auto 8% 7% 8%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(217,180,92,.36),transparent);
+}
+.login-brand{
+  width:min(760px,86%)!important;
+  min-height:0!important;
+  height:auto!important;
+  display:block!important;
+  margin:0 auto!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  overflow:visible!important;
+}
+.login-brand img{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:78vh!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  filter:drop-shadow(0 22px 28px rgba(0,15,7,.35))!important;
+  transform:none!important;
+}
+.login-brand span,.login-copy{display:none!important}
+.login-form-area{
+  min-height:100vh!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:54px 7vw!important;
+  background:var(--wr-cream)!important;
+}
+.login-card{
+  width:min(540px,100%)!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  display:grid!important;
+  gap:22px!important;
+}
+.login-card::before{
+  content:"🛡️";
+  width:92px;
+  height:92px;
+  margin:0 auto 30px;
+  border-radius:26px;
+  display:grid;
+  place-items:center;
+  font-size:52px;
+  background:radial-gradient(circle at 45% 35%,#fff7cf 0%,#dcae42 60%,#9d6c13 100%);
+  box-shadow:0 14px 34px rgba(139,93,13,.20);
+}
+.login-card-logo{display:none!important}
+.login-heading{text-align:center!important;margin-bottom:4px!important}
+.login-heading span{
+  display:block!important;
+  margin-bottom:16px!important;
+  color:#9a701d!important;
+  font-size:14px!important;
+  font-weight:800!important;
+  text-transform:uppercase!important;
+  letter-spacing:.18em!important;
+}
+.login-heading span::after{content:"Gestão de pedidos";font-size:0}
+.login-heading h2{
+  margin:0!important;
+  color:#19472f!important;
+  font-family:"Cormorant Garamond",Georgia,serif!important;
+  font-size:58px!important;
+  line-height:.95!important;
+  letter-spacing:-.02em!important;
+}
+.login-heading p{margin:16px 0 0!important;color:#727b73!important;font-size:18px!important}
+.login-card label{display:grid!important;gap:10px!important;color:#193c2a!important;font-weight:800!important;font-size:15px!important}
+.login-card input{
+  width:100%!important;
+  height:64px!important;
+  padding:0 20px!important;
+  border:1px solid #ddd5c7!important;
+  border-radius:15px!important;
+  background:#fff!important;
+  color:#20382b!important;
+  outline:none!important;
+  box-shadow:none!important;
+  font-size:17px!important;
+}
+.login-card input:focus{border-color:#b9974b!important;box-shadow:0 0 0 4px rgba(185,151,75,.12)!important}
+.password-field{position:relative!important}
+.password-field input{padding-right:82px!important}
+.password-field button{position:absolute!important;right:14px!important;top:50%!important;transform:translateY(-50%)!important;border:0!important;background:transparent!important;color:#336f4c!important;font-weight:800!important}
+.login-card .btn-primary{
+  width:100%!important;
+  min-height:64px!important;
+  border:0!important;
+  border-radius:15px!important;
+  background:#0d472e!important;
+  color:#fff!important;
+  box-shadow:0 14px 28px rgba(13,71,46,.18)!important;
+  font-size:18px!important;
+  font-weight:800!important;
+}
+.login-card .btn-primary:hover{background:#0a3b27!important;transform:translateY(-1px)}
+.login-footnote{margin-top:0!important;text-align:center!important;color:#858b84!important;font-size:14px!important}
+
+/* ESTRUTURA INTERNA */
+.app-shell{background:var(--wr-cream)!important}
+.sidebar{
+  background:linear-gradient(180deg,#0b3925 0%,#104d32 62%,#082e1e 100%)!important;
+  box-shadow:12px 0 34px rgba(7,35,22,.18)!important;
+  border-right:1px solid rgba(255,255,255,.06)!important;
+}
+.sidebar-brand{background:rgba(255,255,255,.045)!important;border-color:rgba(255,255,255,.08)!important}
+.sidebar-brand img{object-fit:contain!important}
+.sidebar-nav button{border-radius:13px!important;color:#dce7df!important}
+.sidebar-nav button.active{background:rgba(255,255,255,.11)!important;box-shadow:inset 3px 0 0 var(--wr-gold-soft)!important}
+.active .nav-icon{background:var(--wr-gold-soft)!important;color:#153a27!important}
+.topbar{background:rgba(245,240,229,.93)!important;border-color:var(--wr-line)!important;box-shadow:none!important}
+.topbar .eyebrow{color:#a67a27!important}
+.topbar-title h1,.page-header h2{font-family:"Cormorant Garamond",Georgia,serif!important;color:#173f2b!important}
+.page-content{background:var(--wr-cream)!important}
+.metric-card,.mini-metric,.panel,.product-card,.document-card,.data-table-wrap,.toolbar{
+  background:rgba(255,253,248,.96)!important;
+  border-color:var(--wr-line)!important;
+  box-shadow:var(--wr-shadow)!important;
+}
+.metric-card,.panel,.product-card,.document-card,.data-table-wrap{border-radius:19px!important}
+.btn-primary{background:#104b31!important;box-shadow:0 10px 22px rgba(16,75,49,.18)!important}
+.btn-secondary{background:#fffdf8!important;border-color:#ded5c6!important;color:#27583d!important}
+.metric-icon{background:#edf3ed!important;color:#245d40!important}
+.tone-gold .metric-icon{background:#f7edd5!important;color:#9b6d18!important}
+.badge.success{background:#e7f2e9!important;color:#23663c!important}
+
+/* saudação visual da visão geral */
+.page-stack.workspace-dashboard::before{
+  content:"Olá, Wildnei!\A Resumo da operação com pedidos e recebimentos em uma visão única.";
+  white-space:pre-line;
+  display:block;
+  padding:26px 28px;
+  border-radius:22px;
+  background:linear-gradient(135deg,#10482f,#1e6945);
+  color:#fff;
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:34px;
+  font-weight:700;
+  line-height:1.08;
+  box-shadow:0 16px 34px rgba(16,72,47,.20);
+}
+
+@media(max-width:900px){
+  .login-page{grid-template-columns:1fr!important}
+  .login-visual{min-height:34vh!important;padding:28px 24px!important}
+  .login-brand{width:min(430px,92%)!important}
+  .login-brand img{max-height:30vh!important}
+  .login-form-area{min-height:66vh!important;padding:34px 24px 48px!important;align-items:flex-start!important}
+  .login-card::before{width:72px;height:72px;margin-bottom:12px;font-size:40px}
+  .login-heading h2{font-size:46px!important}
+}
+
+@media(max-width:680px){
+  .login-page{display:block!important;min-height:100svh!important}
+  .login-visual{min-height:31svh!important}
+  .login-form-area{min-height:69svh!important;padding:28px 20px 40px!important}
+  .login-card{gap:16px!important}
+  .login-card::before{width:58px;height:58px;font-size:30px;border-radius:18px;margin-bottom:0}
+  .login-heading span{font-size:10px!important;margin-bottom:10px!important}
+  .login-heading h2{font-size:40px!important}
+  .login-heading p{font-size:15px!important;margin-top:10px!important}
+  .login-card input,.login-card .btn-primary{height:56px!important;min-height:56px!important}
+  .page-content{padding:14px 12px 94px!important}
+  .topbar{background:rgba(245,240,229,.97)!important}
+  .metric-grid,.metric-grid-compact{grid-template-columns:1fr!important}
+  .metric-card{min-height:92px!important}
+}
