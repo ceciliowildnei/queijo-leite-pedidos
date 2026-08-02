@@ -15,6 +15,7 @@ permissions:
 jobs:
   finalizar:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Baixar projeto
         uses: actions/checkout@v4
