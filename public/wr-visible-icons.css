@@ -1,45 +1,20 @@
-.wr-brand-icon{
-  display:inline-grid!important;
-  place-items:center!important;
-  width:1.55rem!important;
-  height:1.55rem!important;
-  min-width:1.55rem!important;
-  background:none!important;
-  -webkit-mask:none!important;
-  mask:none!important;
-  font-style:normal!important;
-  font-size:1.15rem!important;
-  line-height:1!important;
-  color:currentColor!important;
-}
+@import url('/wr-icons/dashboard.css');
+@import url('/wr-icons/clientes.css');
+@import url('/wr-icons/pedidos.css');
+@import url('/wr-icons/produtos.css');
+@import url('/wr-icons/entregas.css');
+@import url('/wr-icons/caixa.css');
+@import url('/wr-icons/relatorios.css');
+@import url('/wr-icons/administracao.css');
+@import url('/wr-icons/pdf.css');
 
-.wr-brand-icon::before{display:block}
-.wr-icon-dashboard::before{content:"📊"}
-.wr-icon-clientes::before{content:"👥"}
-.wr-icon-pedidos::before{content:"📦"}
-.wr-icon-entregas::before{content:"🚚"}
-.wr-icon-caixa::before{content:"💰"}
-.wr-icon-relatorios::before{content:"📈"}
-.wr-icon-administracao::before{content:"⚙️"}
-.wr-icon-pdf::before{content:"📄"}
-
-.sidebar-nav button.active .wr-brand-icon{
-  transform:scale(1.08);
-}
-
-.document-icon .wr-brand-icon,
-.product-art .wr-brand-icon,
-.compact-icon .wr-brand-icon{
-  width:2rem!important;
-  height:2rem!important;
-  font-size:1.55rem!important;
-}
-
-@media (max-width:768px){
-  .wr-brand-icon{
-    width:1.7rem!important;
-    height:1.7rem!important;
-    min-width:1.7rem!important;
-    font-size:1.25rem!important;
-  }
-}
+.wr-brand-icon{display:inline-block!important;width:2.15rem!important;height:2.15rem!important;min-width:2.15rem!important;background-color:transparent!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important;-webkit-mask:none!important;mask:none!important;font-size:0!important;line-height:0!important;color:transparent!important;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2));transition:transform .18s ease,filter .18s ease}
+.wr-brand-icon::before{content:none!important;display:none!important}
+.sidebar-nav button .nav-icon{display:grid!important;place-items:center!important;width:3rem!important;height:3rem!important;min-width:3rem!important;border-radius:14px!important;background:rgba(255,255,255,.07)!important;overflow:visible!important}
+.sidebar-nav button.active .nav-icon{background:linear-gradient(145deg,#d9a62e,#f0c55a)!important;box-shadow:0 7px 18px rgba(0,0,0,.23)!important}
+.sidebar-nav button.active .wr-brand-icon{transform:scale(1.1);filter:drop-shadow(0 3px 3px rgba(0,0,0,.25))}
+.sidebar-brand img{object-fit:contain!important;max-height:92px!important;width:104px!important;height:auto!important}
+.login-brand img{object-fit:contain!important;max-width:390px!important;max-height:250px!important;width:100%!important;height:auto!important}
+.login-card-logo{object-fit:contain!important;max-width:280px!important;max-height:180px!important;width:100%!important;height:auto!important}
+.document-icon .wr-brand-icon,.product-art .wr-brand-icon,.compact-icon .wr-brand-icon{width:3.2rem!important;height:3.2rem!important;min-width:3.2rem!important}
+@media(max-width:768px){.wr-brand-icon{width:2rem!important;height:2rem!important;min-width:2rem!important}.sidebar-nav button .nav-icon{width:2.75rem!important;height:2.75rem!important;min-width:2.75rem!important}.login-brand img{max-width:290px!important}.login-card-logo{max-width:220px!important}}
