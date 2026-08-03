@@ -1,0 +1,114 @@
+/* Aprimoramento de usabilidade mobile — Queijos WR */
+@media (max-width: 900px) {
+  html, body, #root {
+    min-height: 100%;
+    overflow-x: hidden !important;
+  }
+
+  body {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
+
+  .app-shell, .app-main, .page-content {
+    min-height: 100dvh;
+    overflow: visible !important;
+  }
+
+  .page-content {
+    padding-bottom: calc(118px + env(safe-area-inset-bottom)) !important;
+  }
+
+  button, .btn, a, input, select, textarea, [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(213, 164, 55, .18);
+  }
+
+  button, .btn, [role="button"] { min-height: 48px; }
+  input, select, textarea { min-height: 48px; font-size: 16px !important; }
+
+  .mobile-bottom-nav {
+    min-height: calc(78px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 220 !important;
+  }
+
+  .mobile-bottom-nav button {
+    min-width: 0;
+    min-height: 64px;
+    padding: 7px 4px;
+  }
+
+  .mobile-bottom-nav button:active,
+  .sidebar-nav button:active,
+  .btn:active { transform: scale(.97); }
+
+  .mobile-bottom-icon { pointer-events: none; }
+
+  .mobile-quick-order {
+    bottom: calc(88px + env(safe-area-inset-bottom)) !important;
+    min-height: 52px;
+    z-index: 219 !important;
+  }
+
+  .topbar { align-items: center; }
+  .topbar-actions { max-width: 52vw; overflow: visible; }
+  .wr-collaborator-session .topbar-actions .sync-btn { display: grid !important; }
+
+  .modal-backdrop {
+    align-items: flex-end !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    padding: 0 !important;
+  }
+
+  .modal, .modal-card, .modal-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92dvh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 22px 22px 0 0 !important;
+  }
+
+  .modal-actions, .form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    background: var(--surface, #fff);
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .data-table-wrap, .table-wrap, .panel-body {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .table-actions button { width: 100%; }
+
+  .sidebar {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sidebar-nav { padding-bottom: calc(36px + env(safe-area-inset-bottom)); }
+  .wr-sidebar-logo { width: 76px !important; height: 76px !important; border-radius: 50%; }
+  .login-brand .wr-login-logo { width: min(460px, 88vw) !important; height: auto !important; aspect-ratio: 1 / 1 !important; }
+}
+
+@media (max-width: 430px) {
+  .page-actions { grid-template-columns: 1fr !important; }
+  .metric-grid, .metric-grid-compact,
+  .dashboard-premium .metric-grid-large,
+  .dashboard-premium .metric-grid-compact { grid-template-columns: 1fr !important; }
+  .topbar-search-wrap { display: none; }
+  .topbar-title h1 { font-size: 18px; }
+}
