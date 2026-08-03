@@ -1,8 +1,22 @@
-/* Ícones oficiais enviados pelo usuário */
+/* Ícones oficiais do sistema Queijos WR */
 .wr-icon-dashboard{background-image:url('/icons/dashboard.webp')!important}
 .wr-icon-clientes{background-image:url('/icons/clientes.webp')!important}
+.wr-icon-produtos{background-image:url('/wr-app-icon.svg')!important}
 .wr-icon-pedidos{background-image:url('/icons/pedidos.webp')!important}
 .wr-icon-entregas{background-image:url('/icons/entregas.webp')!important}
-.wr-icon-dashboard,.wr-icon-clientes,.wr-icon-pedidos,.wr-icon-entregas{background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important}
+
+.wr-icon-dashboard,.wr-icon-clientes,.wr-icon-produtos,.wr-icon-pedidos,.wr-icon-entregas,
+.wr-icon-caixa,.wr-icon-relatorios,.wr-icon-administracao,.wr-icon-pdf,.wr-icon-login{
+  background-size:contain!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+}
+
 .nav-icon{overflow:visible!important}
 .nav-icon .wr-brand-icon{filter:none!important}
+.mobile-bottom-icon .wr-brand-icon{filter:none!important}
+
+@media(max-width:900px){
+  .wr-brand-icon{width:34px!important;height:34px!important;flex-basis:34px!important}
+  .mobile-bottom-icon{display:grid;place-items:center;min-width:38px;min-height:38px}
+}
