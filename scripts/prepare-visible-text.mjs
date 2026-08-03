@@ -11,38 +11,39 @@ const replacements = [
   ['>ERP Gestão<', '>Gestão<'],
   ['Queijos WR ERP', 'Queijos WR']
 ];
+for (const [from, to] of replacements) source = source.split(from).join(to);
 
-for (const [from, to] of replacements) {
-  source = source.split(from).join(to);
-}
+const clientSaveVariants = [
+  `    if (entity === 'clientes') return save(entity, { id: form.id, nome: form.nome, telefone: onlyDigits(form.telefone), bairro: form.bairro, rua: form.rua, numero: form.numero, cidade: form.cidade, estado: form.estado, observacoes: form.observacoes });`,
+  `    if (entity === 'clientes') return save(entity, { id: form.id, nome: form.nome, telefone: onlyDigits(form.telefone), cep: onlyDigits(form.cep), rua: form.rua, numero: form.numero, bairro: form.bairro, cidade: form.cidade, estado: form.estado, complemento: form.complemento, observacoes: form.observacoes });`,
+  `    if (entity === 'clientes') return save(entity, { id: form.id, nome: form.nome, telefone: onlyDigits(form.telefone) });`
+];
+const clientSave = `    if (entity === 'clientes') return save(entity, { id: form.id, nome: form.nome, telefone: onlyDigits(form.telefone || '') });`;
+for (const variant of clientSaveVariants) source = source.replace(variant, clientSave);
 
-const clientSaveOriginal = `    if (entity === 'clientes') return save(entity, { id: form.id, nome: form.nome, telefone: onlyDigits(form.telefone), bairro: form.bairro, rua: form.rua, numero: form.numero, cidade: form.cidade, estado: form.estado, observacoes: form.observacoes });`;
-const clientSaveExpanded = `    if (entity === 'clientes') return save(entity, { id: form.id, nome: form.nome, telefone: onlyDigits(form.telefone), cep: onlyDigits(form.cep), rua: form.rua, numero: form.numero, bairro: form.bairro, cidade: form.cidade, estado: form.estado, complemento: form.complemento, observacoes: form.observacoes });`;
-const clientSaveSimple = `    if (entity === 'clientes') return save(entity, { id: form.id, nome: form.nome, telefone: onlyDigits(form.telefone || '') });`;
+const optionalClientForm = `{entity === 'clientes' && <><div className="form-note full"><strong>Cadastro sem disparo:</strong> o nome é obrigatório e o WhatsApp é opcional. Nenhuma mensagem será enviada ao salvar.</div><Field label="Nome" required value={form.nome} onChange={value => set('nome', value)} /><Field label="WhatsApp (opcional)" value={form.telefone} onChange={value => set('telefone', value)} /></>}`;
+source = source.replace(/\{entity === 'clientes' && <>.*?<\/>>\}/s, optionalClientForm);
 
-source = source.replace(clientSaveOriginal, clientSaveSimple);
-source = source.replace(clientSaveExpanded, clientSaveSimple);
-source = source.replace(`    if (entity === 'clientes') return save(entity, { id: form.id, nome: form.nome, telefone: onlyDigits(form.telefone) });`, clientSaveSimple);
+const createOriginal = `    const response = await supabase.from('wr_pedidos').insert(rows);\n    if (response.error) return setError(response.error.message);\n    addLog('Pedido criado', \`\${code} · \${client?.nome || 'Cliente'} · \${rows.length} item(ns)\`);\n    setModal(null);\n    setNotice(\`Pedido \${code} criado com sucesso.\`);\n    await sync(true);`;
+const createReplacement = `    const response = await supabase.from('wr_pedidos').insert(rows);\n    if (response.error) return setError(response.error.message);\n    addLog('Pedido criado', \`\${code} · \${client?.nome || 'Cliente'} · \${rows.length} item(ns)\`);\n    setModal(null);\n    await sync(true);\n    if (payload.sendWhatsapp) {\n      const phone = onlyDigits(client?.telefone || '');\n      if (!phone) {\n        setNotice(\`Pedido \${code} salvo. Cliente sem WhatsApp cadastrado.\`);\n        return;\n      }\n      const destination = phone.startsWith('55') ? phone : \`55\${phone}\`;\n      const items = rows.map(row => \`- \${row.quantidade}x \${row.produto_nome}: \${money(row.total)}\`).join('\\n');\n      const text = \`Olá, \${client?.nome || 'cliente'}!\\n\\nSeu pedido \${code} foi salvo na Queijos WR.\\n\${items}\\n\\nTotal: \${money(sum(rows, 'total'))}\\nEntrega: \${brDate(payload.data_entrega || selectedDate)}\\n\\nObrigado pela preferência!\`;\n      window.open(\`https://wa.me/\${destination}?text=\${encodeURIComponent(text)}\`, '_blank');\n      setNotice(\`Pedido \${code} salvo. Mensagem aberta no WhatsApp.\`);\n      return;\n    }\n    setNotice(\`Pedido \${code} criado com sucesso.\`);`;
+source = source.replace(createOriginal, createReplacement);
 
-const clientFormOriginal = `{entity === 'clientes' && <><div className="form-note full"><strong>Cadastro sem disparo:</strong> ao salvar, o cliente será apenas cadastrado. Nenhuma mensagem será enviada pelo WhatsApp.</div><Field label="Nome" required value={form.nome} onChange={value => set('nome', value)} /><Field label="Telefone" value={form.telefone} onChange={value => set('telefone', value)} /><Field label="Bairro" value={form.bairro} onChange={value => set('bairro', value)} /><Field label="Rua" value={form.rua} onChange={value => set('rua', value)} /><Field label="Número" value={form.numero} onChange={value => set('numero', value)} /><Field label="Cidade" value={form.cidade} onChange={value => set('cidade', value)} /><Field label="Estado" value={form.estado} onChange={value => set('estado', value)} /><Field className="full" label="Observações" value={form.observacoes} onChange={value => set('observacoes', value)} /></>}`;
-const clientFormExpanded = `{entity === 'clientes' && <><div className="form-note full"><strong>Cadastro sem disparo:</strong> ao salvar, o cliente será apenas cadastrado. Nenhuma mensagem será enviada pelo WhatsApp.</div><Field label="Nome do cliente" required value={form.nome} onChange={value => set('nome', value)} /><Field label="Telefone/WhatsApp" value={form.telefone} onChange={value => set('telefone', value)} /><Field label="CEP" value={form.cep} onChange={value => set('cep', value)} /><button type="button" className="btn btn-secondary" onClick={buscarCepCliente} disabled={loadingCep}>{loadingCep ? 'Buscando...' : 'Buscar CEP'}</button><Field label="Rua" value={form.rua} onChange={value => set('rua', value)} /><Field label="Número" value={form.numero} onChange={value => set('numero', value)} /><Field label="Bairro" value={form.bairro} onChange={value => set('bairro', value)} /><Field label="Cidade" value={form.cidade} onChange={value => set('cidade', value)} /><Field label="Estado" value={form.estado} onChange={value => set('estado', value)} /><Field label="Complemento" value={form.complemento} onChange={value => set('complemento', value)} /><Field className="full" label="Observações" value={form.observacoes} onChange={value => set('observacoes', value)} /></>}`;
-const clientFormSimple = `{entity === 'clientes' && <><div className="form-note full"><strong>Cadastro sem disparo:</strong> ao salvar, o cliente será apenas cadastrado. Nenhuma mensagem será enviada pelo WhatsApp.</div><Field label="Nome" required value={form.nome} onChange={value => set('nome', value)} /><Field label="WhatsApp" value={form.telefone} onChange={value => set('telefone', value)} /></>}`;
-const clientFormOptional = `{entity === 'clientes' && <><div className="form-note full"><strong>Cadastro sem disparo:</strong> o nome é obrigatório e o WhatsApp é opcional. Nenhuma mensagem será enviada ao salvar.</div><Field label="Nome" required value={form.nome} onChange={value => set('nome', value)} /><Field label="WhatsApp (opcional)" value={form.telefone} onChange={value => set('telefone', value)} /></>}`;
+const submitOriginal = `  function submit(event) {\n    event.preventDefault();\n    if (!form.cliente_id || !form.items.length) return;\n    save(form);\n  }`;
+const submitReplacement = `  function submit(event, sendWhatsapp = false) {\n    event.preventDefault();\n    if (!form.cliente_id || !form.items.length) return;\n    save({ ...form, sendWhatsapp });\n  }`;
+source = source.replace(submitOriginal, submitReplacement);
 
-source = source.replace(clientFormOriginal, clientFormOptional);
-source = source.replace(clientFormExpanded, clientFormOptional);
-source = source.replace(clientFormSimple, clientFormOptional);
+source = source.replace(
+  `<button className="btn btn-primary btn-lg" type="submit" disabled={!form.cliente_id || !form.items.length}>Finalizar pedido</button><button className="btn btn-ghost" type="button" onClick={close}>Cancelar</button>`,
+  `<button className="btn btn-primary btn-lg" type="submit" disabled={!form.cliente_id || !form.items.length}>Salvar pedido</button><button className="btn btn-secondary btn-lg" type="button" disabled={!form.cliente_id || !form.items.length} onClick={event => submit(event, true)}>Salvar e enviar WhatsApp</button><button className="btn btn-ghost" type="button" onClick={close}>Cancelar</button>`
+);
 
-if (!source.includes(clientFormOptional)) {
-  throw new Error('Não foi possível aplicar o cadastro com WhatsApp opcional.');
-}
+if (!source.includes('Salvar e enviar WhatsApp')) throw new Error('Botão de WhatsApp não foi inserido.');
 
 if (!source.includes('Relatório de separação')) {
   const marker = `      <div className="dashboard-grid"><Panel title="Ranking de produtos"><DataTable compact columns={['Produto', 'Quantidade', 'Faturamento']} rows={ranking.map(item => [item.name, item.quantity, money(item.value)])} empty="Sem dados." /></Panel><Panel title="Resumo por rota"><DataTable compact columns={['Rota', 'Pedidos', 'Qtd.', 'Valor']} rows={routeSummary.map(item => [item.route, item.orders, item.quantity, money(item.value)])} empty="Sem rotas com pedidos." /></Panel></div>`;
   const report = `${marker}\n      <Panel title="Relatório de separação"><DataTable compact columns={['Nome do cliente', 'Produto', 'Quantidade', 'Separado']} rows={[...selectedOrders].sort((a, b) => String(a.cliente_nome || '').localeCompare(String(b.cliente_nome || ''))).map(order => [order.cliente_nome || '—', order.produto_nome || '—', order.quantidade || 0, ['separado', 'em rota', 'entregue'].includes(normalize(order.status_pedido)) ? 'Sim' : 'Não'])} empty="Nenhum pedido nesta data." /></Panel>`;
-  if (!source.includes(marker)) throw new Error('Não foi possível localizar o ponto do relatório.');
   source = source.replace(marker, report);
 }
 
 fs.writeFileSync(filePath, source, 'utf8');
-console.log('Cadastro de cliente com WhatsApp opcional preparado.');
+console.log('Ajustes visuais e envio opcional de pedido por WhatsApp preparados.');
