@@ -1,0 +1,275 @@
+/* Pedido semanal — sexta-feira, pessoas e rotas */
+.weekly-order-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 62px;
+  padding: 14px 17px;
+  border: 1px solid color-mix(in srgb, var(--gold) 28%, var(--border));
+  border-radius: 17px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(211,160,54,.16), transparent 34%),
+    linear-gradient(145deg, color-mix(in srgb, #f1d483 10%, var(--surface)), var(--surface));
+  box-shadow: 0 12px 30px rgba(18,58,34,.06);
+}
+
+.weekly-order-note > div {
+  display: grid;
+  gap: 3px;
+}
+
+.weekly-order-note small {
+  color: var(--gold);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.weekly-order-note strong {
+  color: var(--text);
+  font-size: 15px;
+  letter-spacing: -.02em;
+}
+
+.weekly-order-note span {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.weekly-order-date-badge {
+  flex: none;
+  min-width: 132px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #236f40, #103f26);
+  color: #fff !important;
+  display: grid;
+  place-items: center;
+  font-size: 12px !important;
+  font-weight: 900;
+  box-shadow: 0 9px 22px rgba(20,80,45,.18);
+}
+
+.weekly-route-board {
+  display: grid;
+  gap: 13px;
+}
+
+.weekly-route-board-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.weekly-route-board-heading > div {
+  display: grid;
+  gap: 3px;
+}
+
+.weekly-route-board-heading small {
+  color: var(--gold);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.weekly-route-board-heading h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 18px;
+  letter-spacing: -.03em;
+}
+
+.weekly-route-board-heading span {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.weekly-route-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.weekly-route-card {
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+  border-radius: 19px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 14px 34px rgba(18,58,34,.07);
+}
+
+.weekly-route-card > header {
+  min-height: 64px;
+  padding: 14px 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(211,160,54,.13), transparent 38%),
+    linear-gradient(145deg, color-mix(in srgb, var(--green) 6%, var(--surface)), var(--surface));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.weekly-route-card-title {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.weekly-route-card-title small {
+  color: var(--gold);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.weekly-route-card-title strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weekly-route-count {
+  flex: none;
+  min-width: 45px;
+  min-height: 36px;
+  padding: 6px 8px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--green) 10%, var(--surface));
+  color: var(--green);
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.weekly-route-list {
+  display: grid;
+  padding: 4px 14px 10px;
+}
+
+.weekly-route-person {
+  min-width: 0;
+  padding: 11px 2px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 68%, transparent);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5px 10px;
+}
+
+.weekly-route-person:last-child {
+  border-bottom: 0;
+}
+
+.weekly-route-person > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.weekly-route-person strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weekly-route-person span {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 8.5px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weekly-route-person b {
+  align-self: center;
+  min-width: 35px;
+  padding: 5px 7px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--gold) 12%, var(--surface));
+  color: #936415;
+  font-size: 9px;
+  text-align: center;
+}
+
+.weekly-route-empty {
+  padding: 18px;
+  border: 1px dashed color-mix(in srgb, var(--border) 90%, transparent);
+  border-radius: 17px;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--soft) 76%, var(--surface));
+  font-size: 10px;
+  text-align: center;
+}
+
+.weekly-order-modal-note {
+  margin-bottom: 13px;
+  padding: 11px 13px;
+  border: 1px solid color-mix(in srgb, var(--gold) 24%, var(--border));
+  border-radius: 13px;
+  background: color-mix(in srgb, #f1d483 10%, var(--surface));
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.weekly-order-modal-note strong {
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .weekly-order-note,
+:root[data-theme="dark"] .weekly-route-card,
+:root[data-theme="dark"] .weekly-order-modal-note {
+  border-color: rgba(133,171,145,.15);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(200,151,49,.07), transparent 34%),
+    linear-gradient(145deg, #17261d, #122018);
+}
+
+:root[data-theme="dark"] .weekly-route-card > header {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(200,151,49,.06), transparent 38%),
+    linear-gradient(145deg, #19291f, #142219);
+}
+
+@media (max-width: 1100px) {
+  .weekly-route-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 690px) {
+  .weekly-order-note {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .weekly-order-date-badge {
+    width: 100%;
+  }
+
+  .weekly-route-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .weekly-route-board-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
