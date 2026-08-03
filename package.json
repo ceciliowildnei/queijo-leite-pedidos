@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "node scripts/prepare-visible-text.mjs && vite build",
+    "build": "node scripts/prepare-visible-text.mjs && node scripts/prepare-collaborator-deliveries.mjs && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
