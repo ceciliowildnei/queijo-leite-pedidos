@@ -7,6 +7,12 @@ on:
     paths:
       - scripts/apply-operational-rules.mjs
       - .github/workflows/apply-operational-rules.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - scripts/apply-operational-rules.mjs
+      - .github/workflows/apply-operational-rules.yml
   workflow_dispatch:
 
 permissions:
@@ -38,6 +44,7 @@ jobs:
         run: npm run build
 
       - name: Gravar codigo corrigido
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         run: |
           if git diff --quiet -- src/main.jsx; then
             echo "Nenhuma alteracao pendente."
