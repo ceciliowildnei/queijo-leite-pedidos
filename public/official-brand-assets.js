@@ -1,5 +1,6 @@
 (() => {
   const label = node => node?.textContent?.trim().toLowerCase() || '';
+  const loginLogo = '/icons/login.webp';
   const deliveryTruck = '/icons/entregas.webp';
   const iconByLabel = {
     dashboard: '/icons/dashboard.webp',
@@ -20,8 +21,9 @@
     });
 
     document.querySelectorAll('.login-brand img, .login-card-logo').forEach(image => {
-      setImage(image, deliveryTruck);
-      image.classList.add('wr-login-truck');
+      setImage(image, loginLogo);
+      image.classList.remove('wr-login-truck');
+      image.classList.add('wr-login-logo');
     });
 
     document.querySelectorAll('.sidebar-nav button').forEach(button => {
