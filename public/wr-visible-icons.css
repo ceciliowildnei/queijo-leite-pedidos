@@ -1,0 +1,45 @@
+.wr-brand-icon{
+  display:inline-grid!important;
+  place-items:center!important;
+  width:1.55rem!important;
+  height:1.55rem!important;
+  min-width:1.55rem!important;
+  background:none!important;
+  -webkit-mask:none!important;
+  mask:none!important;
+  font-style:normal!important;
+  font-size:1.15rem!important;
+  line-height:1!important;
+  color:currentColor!important;
+}
+
+.wr-brand-icon::before{display:block}
+.wr-icon-dashboard::before{content:"📊"}
+.wr-icon-clientes::before{content:"👥"}
+.wr-icon-pedidos::before{content:"📦"}
+.wr-icon-entregas::before{content:"🚚"}
+.wr-icon-caixa::before{content:"💰"}
+.wr-icon-relatorios::before{content:"📈"}
+.wr-icon-administracao::before{content:"⚙️"}
+.wr-icon-pdf::before{content:"📄"}
+
+.sidebar-nav button.active .wr-brand-icon{
+  transform:scale(1.08);
+}
+
+.document-icon .wr-brand-icon,
+.product-art .wr-brand-icon,
+.compact-icon .wr-brand-icon{
+  width:2rem!important;
+  height:2rem!important;
+  font-size:1.55rem!important;
+}
+
+@media (max-width:768px){
+  .wr-brand-icon{
+    width:1.7rem!important;
+    height:1.7rem!important;
+    min-width:1.7rem!important;
+    font-size:1.25rem!important;
+  }
+}
