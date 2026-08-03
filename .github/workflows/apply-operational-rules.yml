@@ -1,0 +1,50 @@
+name: Aplicar correcoes operacionais
+
+on:
+  push:
+    branches:
+      - chatgpt/ajustes-bolt
+    paths:
+      - scripts/apply-operational-rules.mjs
+      - .github/workflows/apply-operational-rules.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+        with:
+          ref: chatgpt/ajustes-bolt
+          fetch-depth: 0
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Aplicar regras de cancelamento
+        run: node scripts/apply-operational-rules.mjs src/main.jsx
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Validar build
+        run: npm run build
+
+      - name: Gravar codigo corrigido
+        run: |
+          if git diff --quiet -- src/main.jsx; then
+            echo "Nenhuma alteracao pendente."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/main.jsx
+          git commit -m "fix: retirar pedidos cancelados do fluxo operacional"
+          git push origin HEAD:chatgpt/ajustes-bolt
