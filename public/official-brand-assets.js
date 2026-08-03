@@ -1,6 +1,7 @@
 (() => {
   const label = node => node?.textContent?.trim().toLowerCase() || '';
-  const loginLogo = '/brand/logo-horizontal-oficial.webp';
+  const companyLogo = '/brand/logo-horizontal-oficial.webp';
+  const loginIcon = '/icons/login.webp';
   const deliveryTruck = '/icons/entregas.webp';
   const iconByLabel = {
     dashboard: '/icons/dashboard.webp',
@@ -9,22 +10,29 @@
     entregas: deliveryTruck,
   };
 
-  function setImage(image, source) {
+  function setImage(image, source, className, alt) {
     if (!image) return;
     if (image.getAttribute('src') !== source) image.setAttribute('src', source);
     image.style.objectFit = 'contain';
+    image.classList.remove('wr-login-logo', 'wr-login-icon', 'wr-login-truck', 'wr-sidebar-logo');
+    if (className) image.classList.add(className);
+    if (alt) image.alt = alt;
   }
 
   function applyOfficialBrand() {
     document.querySelectorAll('.sidebar-brand img').forEach(image => {
-      setImage(image, '/brand/logo-simbolo.webp');
+      setImage(image, companyLogo, 'wr-sidebar-logo', 'Queijos WR');
+    });
+    document.querySelectorAll('.sidebar-brand > div').forEach(block => {
+      block.style.display = 'none';
     });
 
-    document.querySelectorAll('.login-brand img, .login-card-logo').forEach(image => {
-      setImage(image, loginLogo);
-      image.classList.remove('wr-login-truck');
-      image.classList.add('wr-login-logo');
-      image.alt = 'Queijos WR';
+    document.querySelectorAll('.login-brand img').forEach(image => {
+      setImage(image, companyLogo, 'wr-login-logo', 'Queijos WR');
+    });
+
+    document.querySelectorAll('.login-card-logo').forEach(image => {
+      setImage(image, loginIcon, 'wr-login-icon', 'Acesso Queijos WR');
     });
 
     document.querySelectorAll('.sidebar-nav button').forEach(button => {
