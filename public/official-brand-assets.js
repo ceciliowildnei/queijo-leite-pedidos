@@ -1,6 +1,6 @@
 (() => {
   const label = node => node?.textContent?.trim().toLowerCase() || '';
-  const loginLogo = '/icons/login.webp';
+  const loginLogo = '/brand/logo-horizontal-oficial.webp';
   const deliveryTruck = '/icons/entregas.webp';
   const iconByLabel = {
     dashboard: '/icons/dashboard.webp',
@@ -24,6 +24,7 @@
       setImage(image, loginLogo);
       image.classList.remove('wr-login-truck');
       image.classList.add('wr-login-logo');
+      image.alt = 'Queijos WR';
     });
 
     document.querySelectorAll('.sidebar-nav button').forEach(button => {
