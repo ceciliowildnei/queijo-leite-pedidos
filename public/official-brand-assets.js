@@ -1,14 +1,20 @@
 (() => {
-  const label = node => node?.textContent?.trim().toLowerCase() || '';
-  const companyLogo = '/brand/logo-horizontal-oficial.webp';
+  const normalize = value => String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+
+  const label = node => normalize(node?.textContent);
+  const companyLogo = '/icons/entregas.webp';
   const loginIconBase64 = '/icons/login-small.b64';
   const transparentImage = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%221%22 height=%221%22/%3E';
-  const deliveryTruck = '/icons/entregas.webp';
+
   const iconByLabel = {
     dashboard: '/icons/dashboard.webp',
     clientes: '/icons/clientes.webp',
     pedidos: '/icons/pedidos.webp',
-    entregas: deliveryTruck,
+    entregas: '/icons/entregas.webp',
   };
 
   let loginIconDataUrl = '';
@@ -42,6 +48,7 @@
     if (!image) return;
     if (image.getAttribute('src') !== source) image.setAttribute('src', source);
     image.style.objectFit = 'contain';
+    image.style.objectPosition = 'center';
     image.classList.remove('wr-login-logo', 'wr-login-icon', 'wr-login-truck', 'wr-sidebar-logo');
     if (className) image.classList.add(className);
     if (alt) image.alt = alt;
@@ -64,25 +71,24 @@
     }
   }
 
-  function applyOfficialBrand() {
-    document.querySelectorAll('.sidebar-brand img').forEach(image => {
-      setImage(image, companyLogo, 'wr-sidebar-logo', 'Queijos WR');
+  function applyCompanyLogo() {
+    document.querySelectorAll('.sidebar-brand img, .login-brand img').forEach(image => {
+      const targetClass = image.closest('.sidebar-brand') ? 'wr-sidebar-logo' : 'wr-login-logo';
+      setImage(image, companyLogo, targetClass, 'Queijos WR');
     });
+
     document.querySelectorAll('.sidebar-brand > div').forEach(block => {
       block.style.display = 'none';
     });
+  }
 
-    document.querySelectorAll('.login-brand img').forEach(image => {
-      setImage(image, companyLogo, 'wr-login-logo', 'Queijos WR');
-    });
-
-    applyLoginIcon();
-
+  function applyModuleIcons() {
     document.querySelectorAll('.sidebar-nav button').forEach(button => {
       const name = label(button.querySelector('.nav-label'));
       const icon = button.querySelector('.wr-brand-icon');
-      if (!icon || !iconByLabel[name]) return;
-      icon.style.backgroundImage = `url('${iconByLabel[name]}')`;
+      if (!icon) return;
+      const source = iconByLabel[name];
+      if (source) icon.style.backgroundImage = `url('${source}')`;
       icon.style.backgroundSize = name === 'entregas' ? '115%' : 'contain';
       icon.style.backgroundPosition = 'center';
       icon.style.backgroundRepeat = 'no-repeat';
@@ -90,14 +96,21 @@
 
     document.querySelectorAll('.mobile-bottom-nav button').forEach(button => {
       const name = label(button.querySelector('span:last-child'));
-      const key = name === 'início' ? 'dashboard' : name;
+      const key = name === 'inicio' ? 'dashboard' : name;
       const icon = button.querySelector('.wr-brand-icon');
-      if (!icon || !iconByLabel[key]) return;
-      icon.style.backgroundImage = `url('${iconByLabel[key]}')`;
+      if (!icon) return;
+      const source = iconByLabel[key];
+      if (source) icon.style.backgroundImage = `url('${source}')`;
       icon.style.backgroundSize = key === 'entregas' ? '118%' : 'contain';
       icon.style.backgroundPosition = 'center';
       icon.style.backgroundRepeat = 'no-repeat';
     });
+  }
+
+  function applyOfficialBrand() {
+    applyCompanyLogo();
+    applyLoginIcon();
+    applyModuleIcons();
   }
 
   let scheduled = false;
