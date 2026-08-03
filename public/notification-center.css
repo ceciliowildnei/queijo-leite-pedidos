@@ -1,0 +1,121 @@
+.wr-notification-panel{
+  position:fixed;
+  top:82px;
+  right:24px;
+  width:min(390px,calc(100vw - 24px));
+  max-height:70vh;
+  background:#10271c;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:18px;
+  box-shadow:0 24px 60px rgba(0,0,0,.35);
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(-8px) scale(.98);
+  transition:.2s ease;
+  z-index:9999;
+  overflow:hidden;
+}
+
+.wr-notification-panel.open{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0) scale(1);
+}
+
+.wr-notification-panel header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:18px 20px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  background:linear-gradient(135deg,#173d29,#10271c);
+}
+
+.wr-notification-panel header div{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.wr-notification-panel header strong{font-size:1rem}
+.wr-notification-panel header small{color:#afc7b8;font-size:.78rem}
+
+.wr-notification-refresh{
+  width:36px;
+  height:36px;
+  border:0;
+  border-radius:10px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  cursor:pointer;
+  font-size:1.1rem;
+}
+
+.wr-notification-body{
+  max-height:calc(70vh - 74px);
+  overflow:auto;
+  padding:10px;
+}
+
+.wr-notification-item{
+  width:100%;
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:14px;
+  border:0;
+  border-radius:14px;
+  background:transparent;
+  color:#fff;
+  text-align:left;
+  cursor:pointer;
+}
+
+.wr-notification-item:hover{background:rgba(255,255,255,.07)}
+.wr-notification-icon{font-size:1.35rem;line-height:1.2}
+.wr-notification-copy{display:flex;flex-direction:column;gap:4px}
+.wr-notification-copy strong{font-size:.93rem}
+.wr-notification-copy small{font-size:.8rem;color:#b9cabe;line-height:1.35}
+
+.wr-notification-empty,
+.wr-notification-loading{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  padding:30px 18px;
+  color:#b9cabe;
+  text-align:center;
+}
+
+.notification-btn{
+  position:relative;
+}
+
+.notification-btn span{
+  position:absolute;
+  top:-7px;
+  right:-7px;
+  min-width:20px;
+  height:20px;
+  display:grid;
+  place-items:center;
+  padding:0 5px;
+  border-radius:999px;
+  background:#d7a62c;
+  color:#17351f;
+  font-size:.72rem;
+  font-weight:800;
+  border:2px solid #10271c;
+}
+
+@media(max-width:768px){
+  .wr-notification-panel{
+    top:72px;
+    right:12px;
+    left:12px;
+    width:auto;
+    max-height:76vh;
+  }
+}
