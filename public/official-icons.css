@@ -1,0 +1,8 @@
+/* Ícones oficiais enviados pelo usuário */
+.wr-icon-dashboard{background-image:url('/icons/dashboard.webp')!important}
+.wr-icon-clientes{background-image:url('/icons/clientes.webp')!important}
+.wr-icon-pedidos{background-image:url('/icons/pedidos.webp')!important}
+.wr-icon-entregas{background-image:url('/icons/entregas.webp')!important}
+.wr-icon-dashboard,.wr-icon-clientes,.wr-icon-pedidos,.wr-icon-entregas{background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important}
+.nav-icon{overflow:visible!important}
+.nav-icon .wr-brand-icon{filter:none!important}

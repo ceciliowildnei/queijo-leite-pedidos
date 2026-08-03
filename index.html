@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#123d27" />
+    <meta name="theme-color" content="#153d29" />
     <meta name="application-name" content="Queijos WR" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="/operations-stage-2.css" />
     <link rel="stylesheet" href="/weekly-order.css" />
     <link rel="stylesheet" href="/mobile-stage-3.css" />
+    <link rel="stylesheet" href="/brand-style.css" />
+    <link rel="stylesheet" href="/official-icons.css" />
     <title>Queijos WR</title>
   </head>
   <body>
@@ -32,39 +34,27 @@
           [/Queijos WR ERP/g, 'Queijos WR'],
           [/ERP Gestão/g, 'Gestão']
         ];
-
-        const removeErp = value => replacements.reduce(
-          (text, [pattern, replacement]) => text.replace(pattern, replacement),
-          value
-        );
-
+        const removeErp = value => replacements.reduce((text, [pattern, replacement]) => text.replace(pattern, replacement), value);
         const cleanNode = node => {
           if (node.nodeType === Node.TEXT_NODE) {
             const cleaned = removeErp(node.nodeValue || '');
             if (cleaned !== node.nodeValue) node.nodeValue = cleaned;
             return;
           }
-
           if (!(node instanceof Element)) return;
           const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
           let current;
           while ((current = walker.nextNode())) cleanNode(current);
         };
-
         const observer = new MutationObserver(mutations => {
           mutations.forEach(mutation => {
             mutation.addedNodes.forEach(cleanNode);
             if (mutation.type === 'characterData') cleanNode(mutation.target);
           });
         });
-
         window.addEventListener('DOMContentLoaded', () => {
           cleanNode(document.body);
-          observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-            characterData: true
-          });
+          observer.observe(document.body, { childList: true, subtree: true, characterData: true });
         });
       })();
     </script>
@@ -73,6 +63,7 @@
     <script defer src="/operations-stage-2.js"></script>
     <script defer src="/weekly-order.js"></script>
     <script defer src="/mobile-stage-3.js"></script>
+    <script defer src="/official-brand-assets.js"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
