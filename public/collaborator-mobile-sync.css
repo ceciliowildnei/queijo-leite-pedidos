@@ -1,0 +1,27 @@
+@media (max-width: 900px) {
+  .wr-collaborator-session .topbar-actions .sync-btn {
+    display: inline-grid !important;
+    place-items: center;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 12px;
+    flex: 0 0 40px;
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, rgba(21, 61, 41, .16));
+    color: var(--green, #153d29);
+    box-shadow: 0 7px 18px rgba(18, 58, 34, .08);
+    touch-action: manipulation;
+  }
+
+  .wr-collaborator-session .topbar-actions .sync-btn:active {
+    transform: scale(.96);
+  }
+
+  .wr-collaborator-session .topbar-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}
