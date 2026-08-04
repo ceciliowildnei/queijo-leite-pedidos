@@ -7,7 +7,7 @@
   "scope": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
-  "background_color": "#07140d",
+  "background_color": "#000000",
   "theme_color": "#123d27",
   "lang": "pt-BR",
   "orientation": "any",
@@ -20,9 +20,9 @@
       "purpose": "any"
     },
     {
-      "src": "/brand/logo-simbolo.webp",
+      "src": "/brand/app-icon.svg",
       "sizes": "512x512",
-      "type": "image/webp",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ],
