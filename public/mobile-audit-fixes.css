@@ -1,0 +1,38 @@
+/* Varredura final mobile e ícones do sistema Queijos WR */
+.wr-system-icon{display:block;width:24px;height:24px;background:currentColor;mask-position:center;mask-repeat:no-repeat;mask-size:contain;-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain}
+.wr-system-sync{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.75 10h-2.1A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z'/%3E%3C/svg%3E");-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.75 10h-2.1A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z'/%3E%3C/svg%3E")}
+.wr-system-exit{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10 17v-2h4V9h-4V7l-5 5zm9-14h-8a2 2 0 0 0-2 2v2h2V5h8v14h-8v-2H9v2a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2'/%3E%3C/svg%3E");-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10 17v-2h4V9h-4V7l-5 5zm9-14h-8a2 2 0 0 0-2 2v2h2V5h8v14h-8v-2H9v2a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2'/%3E%3C/svg%3E")}
+.wr-system-more{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle fill='black' cx='5' cy='12' r='2'/%3E%3Ccircle fill='black' cx='12' cy='12' r='2'/%3E%3Ccircle fill='black' cx='19' cy='12' r='2'/%3E%3C/svg%3E");-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle fill='black' cx='5' cy='12' r='2'/%3E%3Ccircle fill='black' cx='12' cy='12' r='2'/%3E%3Ccircle fill='black' cx='19' cy='12' r='2'/%3E%3C/svg%3E")}
+
+.wr-icon-produtos{background-image:url('/wr-app-icon.svg')!important}
+.wr-icon-caixa{background-image:linear-gradient(135deg,#f7df82,#b56d0a)!important;border-radius:10px;position:relative}
+.wr-icon-caixa::after{content:'R$';display:grid;place-items:center;width:100%;height:100%;font-size:11px;font-weight:900;color:#123d27}
+.wr-icon-relatorios{background-image:linear-gradient(180deg,#fff7d6,#e5b441)!important;border-radius:8px;position:relative}
+.wr-icon-relatorios::after{content:'▥';display:grid;place-items:center;width:100%;height:100%;font-size:22px;color:#17462e}
+.wr-icon-administracao{background-image:linear-gradient(135deg,#2b7248,#0d3825)!important;border-radius:50%;position:relative}
+.wr-icon-administracao::after{content:'⚙';display:grid;place-items:center;width:100%;height:100%;font-size:21px;color:#f4c74f}
+.wr-icon-pdf{background-image:linear-gradient(180deg,#fff,#efe5cc)!important;border-radius:7px;position:relative;border:2px solid #d6a63f}
+.wr-icon-pdf::after{content:'PDF';display:grid;place-items:center;width:100%;height:100%;font-size:8px;font-weight:900;color:#a2251b}
+
+@media(max-width:900px){
+  html{scroll-behavior:smooth;overscroll-behavior-y:auto}
+  body{overflow-y:auto!important;overscroll-behavior-y:auto!important;touch-action:pan-y pinch-zoom!important}
+  .app-shell,.app-main,.page-content{overflow:visible!important;max-height:none!important}
+  .page-content{padding-bottom:calc(150px + env(safe-area-inset-bottom))!important;scroll-margin-top:110px}
+  .wr-mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:9px 12px;background:color-mix(in srgb,var(--surface,#fff) 94%,transparent);border-bottom:1px solid var(--border,#ddd);position:sticky;top:70px;z-index:55;backdrop-filter:blur(12px)}
+  .wr-mobile-action{min-height:46px;border:1px solid var(--border,#ddd);border-radius:14px;background:var(--surface,#fff);color:var(--green,#17462e);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;box-shadow:0 6px 16px rgba(17,55,34,.07)}
+  .wr-mobile-action:active{transform:scale(.97)}
+  .wr-mobile-sync.is-syncing .wr-system-sync{animation:wr-spin .8s linear infinite}
+  @keyframes wr-spin{to{transform:rotate(360deg)}}
+  .mobile-bottom-nav{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+  .mobile-bottom-nav button{overflow:hidden}
+  .mobile-bottom-nav button>span:last-child{font-size:10px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;max-width:100%}
+  .mobile-bottom-nav .wr-system-icon{width:28px;height:28px}
+  .mobile-menu-open{overflow:hidden}
+  .mobile-menu-open .sidebar{overflow-y:auto!important;overscroll-behavior:contain}
+  .sidebar-nav button{flex:none!important}
+  .modal-backdrop{touch-action:pan-y!important}
+  .modal,.modal-card,.modal-content{overscroll-behavior:contain;scroll-behavior:smooth}
+  .page-stack>*{animation:wr-page-in .22s ease both}
+  @keyframes wr-page-in{from{opacity:.72;transform:translateY(5px)}to{opacity:1;transform:none}}
+}
