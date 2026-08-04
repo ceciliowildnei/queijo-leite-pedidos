@@ -1,26 +1,43 @@
 {
+  "id": "/",
   "name": "Queijos WR Pedidos",
   "short_name": "Queijos WR",
-  "description": "Gestão de clientes, pedidos e entregas da Queijos WR.",
-  "start_url": "/",
+  "description": "Controle de clientes, pedidos, entregas e caixa da Queijos WR.",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#f4f7f4",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#07140d",
   "theme_color": "#123d27",
   "lang": "pt-BR",
   "orientation": "any",
+  "categories": ["business", "productivity"],
   "icons": [
     {
-      "src": "/brand/logo-simbolo.webp",
-      "sizes": "512x512",
+      "src": "/brand/app-icon-192.webp",
+      "sizes": "192x192",
       "type": "image/webp",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "/brand/logo-simbolo.webp",
       "sizes": "512x512",
       "type": "image/webp",
-      "purpose": "maskable"
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Novo pedido",
+      "short_name": "Pedido",
+      "url": "/?source=pwa&action=novo-pedido",
+      "icons": [{ "src": "/brand/app-icon-192.webp", "sizes": "192x192", "type": "image/webp" }]
+    },
+    {
+      "name": "Controle financeiro",
+      "short_name": "Caixa",
+      "url": "/?source=pwa&page=caixa",
+      "icons": [{ "src": "/brand/app-icon-192.webp", "sizes": "192x192", "type": "image/webp" }]
     }
   ]
 }
