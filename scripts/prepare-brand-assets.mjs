@@ -12,10 +12,22 @@ function walk(directory) {
   });
 }
 
+function ensureParent(target) {
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+}
+
 function writeDecoded(relative, encoded) {
   const target = path.join(publicRoot, relative);
-  fs.mkdirSync(path.dirname(target), { recursive: true });
+  ensureParent(target);
   fs.writeFileSync(target, Buffer.from(encoded.replace(/\s+/g, ''), 'base64'));
+}
+
+function readParts(partDir) {
+  return fs.readdirSync(partDir)
+    .filter(name => name.endsWith('.part'))
+    .sort()
+    .map(name => fs.readFileSync(path.join(partDir, name), 'utf8'))
+    .join('');
 }
 
 const encodedFiles = walk(sourceRoot).filter(file => file.endsWith('.b64'));
@@ -37,14 +49,22 @@ function collectPartDirs(directory) {
 }
 collectPartDirs(sourceRoot);
 
+let prepared = encodedFiles.length;
 for (const partDir of partDirs) {
   const relative = path.relative(sourceRoot, partDir).replace(/\.parts$/, '');
-  const encoded = fs.readdirSync(partDir)
-    .filter(name => name.endsWith('.part'))
-    .sort()
-    .map(name => fs.readFileSync(path.join(partDir, name), 'utf8'))
-    .join('');
-  writeDecoded(relative, encoded);
+  const joined = readParts(partDir);
+
+  if (relative.endsWith('.bundle')) {
+    const assets = JSON.parse(joined);
+    for (const [targetPath, encoded] of Object.entries(assets)) {
+      writeDecoded(targetPath, encoded);
+      prepared += 1;
+    }
+    continue;
+  }
+
+  writeDecoded(relative, joined);
+  prepared += 1;
 }
 
-console.log(`Identidade Queijos WR preparada: ${encodedFiles.length + partDirs.length} arquivos.`);
+console.log(`Identidade Queijos WR preparada: ${prepared} arquivos.`);
