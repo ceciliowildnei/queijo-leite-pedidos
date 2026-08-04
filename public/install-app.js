@@ -49,7 +49,7 @@
     button.id = 'wr-install-app';
     button.type = 'button';
     button.className = 'wr-install-app';
-    button.innerHTML = '<span class="wr-install-icon">⬇</span><span><strong>Instalar aplicativo</strong><small>Usar no celular com ícone</small></span>';
+    button.innerHTML = '<img class="wr-install-logo" src="/brand/app-icon-192.webp" alt="Ícone Queijos WR"><span><strong>Instalar aplicativo</strong><small>Usar no celular com ícone</small></span>';
     button.addEventListener('click', installApp);
     document.body.appendChild(button);
     updateButton();
