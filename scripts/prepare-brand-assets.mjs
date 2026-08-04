@@ -3,6 +3,10 @@ import path from 'node:path';
 
 const sourceRoot = path.resolve('assets-b64');
 const publicRoot = path.resolve('public');
+const ignoredPartTargets = new Set([
+  'icons/login.webp',
+  'brand/logo-horizontal-oficial.webp',
+]);
 
 function walk(directory) {
   if (!fs.existsSync(directory)) return [];
@@ -52,8 +56,9 @@ collectPartDirs(sourceRoot);
 let prepared = encodedFiles.length;
 for (const partDir of partDirs) {
   const relative = path.relative(sourceRoot, partDir).replace(/\.parts$/, '');
-  const joined = readParts(partDir);
+  if (ignoredPartTargets.has(relative)) continue;
 
+  const joined = readParts(partDir);
   if (relative.endsWith('.bundle')) {
     const assets = JSON.parse(joined);
     for (const [targetPath, encoded] of Object.entries(assets)) {
