@@ -1,7 +1,7 @@
-/* Ícones oficiais do sistema Queijos WR */
+/* Identidade e ícones oficiais do sistema Queijos WR */
 .wr-icon-dashboard{background-image:url('/icons/dashboard.webp')!important}
 .wr-icon-clientes{background-image:url('/icons/clientes.webp')!important}
-.wr-icon-produtos{background-image:url('/wr-app-icon.svg')!important}
+.wr-icon-produtos{background-image:url('/brand/logo-simbolo.webp')!important}
 .wr-icon-pedidos{background-image:url('/icons/pedidos.webp')!important}
 .wr-icon-entregas{background-image:url('/icons/entregas.webp')!important}
 
@@ -13,10 +13,46 @@
 }
 
 .nav-icon{overflow:visible!important}
-.nav-icon .wr-brand-icon{filter:none!important}
-.mobile-bottom-icon .wr-brand-icon{filter:none!important}
+.nav-icon .wr-brand-icon,.mobile-bottom-icon .wr-brand-icon{filter:none!important}
+
+.login-brand .wr-login-logo{
+  width:min(680px,88%)!important;
+  height:auto!important;
+  max-height:48vh!important;
+  aspect-ratio:auto!important;
+  object-fit:contain!important;
+  background:transparent!important;
+  border:0!important;
+  padding:0!important;
+}
+
+.login-card .wr-login-icon{
+  display:block!important;
+  width:128px!important;
+  height:128px!important;
+  margin:0 auto 14px!important;
+  object-fit:contain!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  padding:0!important;
+  filter:drop-shadow(0 10px 18px rgba(3,35,19,.20))!important;
+}
+
+.sidebar-brand .wr-sidebar-logo{
+  width:100%!important;
+  height:82px!important;
+  object-fit:contain!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  padding:0!important;
+}
 
 @media(max-width:900px){
   .wr-brand-icon{width:34px!important;height:34px!important;flex-basis:34px!important}
   .mobile-bottom-icon{display:grid;place-items:center;min-width:38px;min-height:38px}
+  .login-card .wr-login-icon{width:108px!important;height:108px!important;margin-bottom:10px!important}
+  .login-brand .wr-login-logo{width:min(340px,86vw)!important;max-height:32vh!important}
+  .sidebar-brand .wr-sidebar-logo{height:72px!important}
 }
