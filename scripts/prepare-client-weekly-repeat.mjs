@@ -79,7 +79,7 @@ const saveEntityReplacement = `  async function saveEntity(type, object) {
       }
     }
 
-    addLog(id ? 'Registro atualizado' : 'Registro criado', \`${type}: \${payload.nome || payload.codigo || payload.cliente_nome || id || 'novo'}\`);
+    addLog(id ? 'Registro atualizado' : 'Registro criado', type + ': ' + (payload.nome || payload.codigo || payload.cliente_nome || id || 'novo'));
     setModal(null);
     setNotice(type === 'clientes'
       ? repeatWeekly
