@@ -1,0 +1,27 @@
+.product-card .product-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 158px;
+  overflow: hidden;
+}
+
+.product-card .product-art .wr-official-product-image {
+  display: block;
+  width: min(150px, 72%);
+  height: min(150px, 72%);
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.24));
+}
+
+@media (max-width: 768px) {
+  .product-card .product-art {
+    min-height: 132px;
+  }
+
+  .product-card .product-art .wr-official-product-image {
+    width: min(122px, 68%);
+    height: min(122px, 68%);
+  }
+}
