@@ -1,27 +1,36 @@
 .product-card .product-art {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 158px;
   overflow: hidden;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: min(150px, 72%) min(150px, 72%);
 }
 
-.product-card .product-art .wr-official-product-image {
-  display: block;
-  width: min(150px, 72%);
-  height: min(150px, 72%);
-  object-fit: contain;
-  object-position: center;
-  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.24));
+.product-card .product-art[data-wr-product-icon] > * {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.product-card .product-art.wr-product-art-leite {
+  background-image: url('/product-icons/leite.webp?v=202608052015');
+}
+
+.product-card .product-art.wr-product-art-queijo-g {
+  background-image: url('/product-icons/queijo-g.webp?v=202608052015');
+}
+
+.product-card .product-art.wr-product-art-queijo-p {
+  background-image: url('/product-icons/queijo-p.webp?v=202608052015');
 }
 
 @media (max-width: 768px) {
   .product-card .product-art {
     min-height: 132px;
-  }
-
-  .product-card .product-art .wr-official-product-image {
-    width: min(122px, 68%);
-    height: min(122px, 68%);
+    background-size: min(122px, 68%) min(122px, 68%);
   }
 }
