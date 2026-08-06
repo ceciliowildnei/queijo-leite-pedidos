@@ -1,11 +1,13 @@
-const CACHE_NAME = 'queijos-wr-v2';
+const CACHE_NAME = 'queijos-wr-v3-202608061402';
 const APP_SHELL = [
   '/',
   '/manifest.webmanifest',
   '/brand/app-icon-mobile.jpg',
   '/brand/logo-simbolo.webp',
   '/install-app.css',
-  '/install-app.js'
+  '/install-app.js',
+  '/mobile-stage-3.js?v=202608061402',
+  '/mobile-final-fixes.css?v=202608061402'
 ];
 
 self.addEventListener('install', event => {
@@ -38,9 +40,10 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      const network = fetch(event.request)
+  const isFreshAsset = /\.(?:js|css|json|webmanifest)$/i.test(url.pathname);
+  if (isFreshAsset) {
+    event.respondWith(
+      fetch(event.request)
         .then(response => {
           if (response.ok) {
             const copy = response.clone();
@@ -48,8 +51,18 @@ self.addEventListener('fetch', event => {
           }
           return response;
         })
-        .catch(() => cached);
-      return cached || network;
-    })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
+      if (response.ok) {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
+      }
+      return response;
+    }))
   );
 });
