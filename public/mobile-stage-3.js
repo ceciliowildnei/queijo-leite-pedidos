@@ -6,18 +6,36 @@
   const keys = ['dashboard', 'clientes', 'pedidos', 'entregas'];
   const navLabel = key => ({ dashboard: 'Início', clientes: 'Clientes', pedidos: 'Pedidos', entregas: 'Entregas' })[key] || key;
   const iconFor = key => key;
+  let moreRequested = false;
 
   const findSidebarButtons = () => [...document.querySelectorAll('.sidebar-nav button')];
   const sidebarKey = button => {
     const label = normalize(text(button?.querySelector('.nav-label')));
-    if (label === 'dashboard') return 'dashboard';
+    if (label === 'dashboard' || label === 'inicio') return 'dashboard';
     if (label === 'clientes') return 'clientes';
     if (label === 'pedidos' || label === 'pedido semanal') return 'pedidos';
     if (label === 'entregas') return 'entregas';
+    if (label === 'produtos') return 'produtos';
+    if (label === 'caixa' || label === 'controle financeiro') return 'caixa';
+    if (label === 'relatorios') return 'relatorios';
+    if (label === 'administracao') return 'administracao';
+    if (label.includes('pdf')) return 'pdfs';
     return label;
   };
   const findSidebarButtonByKey = key => findSidebarButtons().find(button => sidebarKey(button) === key);
   const currentKey = () => sidebarKey(findSidebarButtons().find(button => button.classList.contains('active')));
+
+  function classifySidebarButtons() {
+    findSidebarButtons().forEach(button => {
+      const key = sidebarKey(button);
+      button.dataset.wrMobileKey = key;
+      button.dataset.wrMobilePrimary = keys.includes(key) ? 'true' : 'false';
+    });
+  }
+
+  function setMoreMode(enabled) {
+    document.documentElement.classList.toggle('wr-mobile-more-open', Boolean(enabled));
+  }
 
   function removeDuplicates(selector, keepId) {
     const nodes = [...document.querySelectorAll(selector)];
@@ -33,8 +51,10 @@
   function openMore() {
     const shell = document.querySelector('.app-shell');
     const alreadyOpen = shell?.classList.contains('mobile-menu-open') || document.querySelector('.sidebar-backdrop.show');
-    if (alreadyOpen) return;
-    document.querySelector('.mobile-menu-btn')?.click();
+    moreRequested = true;
+    setMoreMode(true);
+    if (!alreadyOpen) document.querySelector('.mobile-menu-btn')?.click();
+    setTimeout(() => { moreRequested = false; }, 0);
   }
 
   function openQuickOrder() {
@@ -98,7 +118,10 @@
       button.type = 'button';
       button.dataset.mobileTab = key;
       button.innerHTML = `<span class="mobile-bottom-icon"><i class="wr-brand-icon wr-icon-${iconFor(key)}" aria-hidden="true"></i></span><span>${navLabel(key)}</span>`;
-      button.addEventListener('click', () => findSidebarButtonByKey(key)?.click());
+      button.addEventListener('click', () => {
+        setMoreMode(false);
+        findSidebarButtonByKey(key)?.click();
+      });
       nav.appendChild(button);
     });
 
@@ -121,19 +144,46 @@
 
   function syncBottomNav() {
     const activeKey = currentKey();
-    document.querySelectorAll('#wr-mobile-bottom-nav button').forEach(button => button.classList.toggle('active', button.dataset.mobileTab === activeKey));
+    const isSecondary = Boolean(activeKey) && !keys.includes(activeKey);
+    document.querySelectorAll('#wr-mobile-bottom-nav button').forEach(button => {
+      const shouldActivate = button.dataset.mobileTab === activeKey || (button.dataset.mobileTab === 'mais' && isSecondary);
+      button.classList.toggle('active', shouldActivate);
+      if (shouldActivate) button.setAttribute('aria-current', 'page');
+      else button.removeAttribute('aria-current');
+    });
     const quick = document.querySelector('#wr-mobile-quick-order');
     if (quick) quick.hidden = !findSidebarButtonByKey('pedidos');
   }
 
   function enhanceTables() {
     if (!mobileQuery.matches) return;
-    document.querySelectorAll('.stage2-table').forEach(wrapper => {
-      wrapper.classList.add('mobile-card-table');
+    document.querySelectorAll('.data-table-wrap').forEach(wrapper => {
+      const table = wrapper.querySelector('table');
       const headers = [...wrapper.querySelectorAll('thead th')].map(item => text(item));
-      wrapper.querySelectorAll('tbody tr').forEach(row => [...row.children].forEach((cell, index) => {
-        if (!cell.dataset.label) cell.dataset.label = headers[index] || 'Informação';
-      }));
+      if (!table || !headers.length || wrapper.classList.contains('wr-keep-table-scroll')) return;
+
+      wrapper.classList.add('mobile-card-table', 'wr-mobile-card-table');
+      wrapper.querySelectorAll('tbody tr').forEach(row => {
+        const cells = [...row.children];
+        if (row.querySelector('.table-empty')) {
+          row.classList.add('wr-mobile-empty-row');
+          return;
+        }
+        cells.forEach((cell, index) => {
+          if (!cell.dataset.label) cell.dataset.label = headers[index] || 'Informação';
+        });
+      });
+    });
+  }
+
+  function enhanceWeeklyOrders() {
+    if (!mobileQuery.matches) return;
+    document.querySelectorAll('.page-content > .page-stack').forEach(page => {
+      const title = normalize(text(page.querySelector('.page-header h2')));
+      if (title !== 'pedidos' && title !== 'pedido semanal') return;
+      page.classList.add('stage2-operations-page', 'orders-stage-2');
+      page.querySelector('.toolbar')?.classList.add('stage2-toolbar');
+      page.querySelector('.data-table-wrap')?.classList.add('stage2-table', 'mobile-card-table', 'wr-mobile-card-table');
     });
   }
 
@@ -141,6 +191,27 @@
     if (mobileQuery.matches) return;
     document.querySelectorAll('.mobile-bottom-nav,.mobile-quick-order,.wr-mobile-actions').forEach(node => node.remove());
     document.body.classList.remove('mobile-modal-open');
+    setMoreMode(false);
+  }
+
+  function handleNavigationClick(event) {
+    const target = event.target.closest('button, .sidebar-backdrop');
+    if (!target) return;
+
+    if (target.matches('#wr-mobile-bottom-nav [data-mobile-tab="mais"]')) {
+      moreRequested = true;
+      setMoreMode(true);
+      return;
+    }
+
+    if (target.matches('.mobile-menu-btn') && !moreRequested) {
+      setMoreMode(false);
+      return;
+    }
+
+    if (target.matches('.sidebar-backdrop, .sidebar-nav button')) {
+      setMoreMode(false);
+    }
   }
 
   let scheduled = false;
@@ -150,14 +221,17 @@
     requestAnimationFrame(() => {
       scheduled = false;
       cleanupDesktop();
+      classifySidebarButtons();
       buildMobileActions();
       buildBottomNav();
       syncBottomNav();
+      enhanceWeeklyOrders();
       enhanceTables();
       document.body.classList.toggle('mobile-modal-open', Boolean(document.querySelector('.modal-backdrop')));
     });
   }
 
+  document.addEventListener('click', handleNavigationClick, true);
   window.addEventListener('DOMContentLoaded', () => {
     enhance();
     new MutationObserver(enhance).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
