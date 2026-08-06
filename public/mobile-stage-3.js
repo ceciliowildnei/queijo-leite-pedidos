@@ -1,5 +1,8 @@
 (() => {
-  const mobileQuery = window.matchMedia('(max-width: 900px)');
+  const widthQuery = window.matchMedia('(max-width: 900px)');
+  const touchQuery = window.matchMedia('(pointer: coarse), (hover: none)');
+  const mobileUserAgent = /Android|iPhone|iPad|iPod|Mobile|IEMobile|Opera Mini/i.test(navigator.userAgent || '');
+  const isMobileExperience = () => widthQuery.matches && (touchQuery.matches || mobileUserAgent);
   const text = node => node?.textContent?.trim() || '';
   const normalize = value => String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
 
@@ -81,7 +84,7 @@
   }
 
   function buildMobileActions() {
-    if (!mobileQuery.matches || !document.querySelector('.app-shell')) return;
+    if (!isMobileExperience() || !document.querySelector('.app-shell')) return;
     removeDuplicates('.wr-mobile-actions', 'wr-mobile-actions');
     if (document.querySelector('#wr-mobile-actions')) return;
 
@@ -102,7 +105,7 @@
   }
 
   function buildBottomNav() {
-    if (!mobileQuery.matches || !document.querySelector('.app-shell')) return;
+    if (!isMobileExperience() || !document.querySelector('.app-shell')) return;
     removeDuplicates('.mobile-bottom-nav', 'wr-mobile-bottom-nav');
     removeDuplicates('.mobile-quick-order', 'wr-mobile-quick-order');
     if (document.querySelector('#wr-mobile-bottom-nav')) return;
@@ -156,7 +159,7 @@
   }
 
   function enhanceTables() {
-    if (!mobileQuery.matches) return;
+    if (!isMobileExperience()) return;
     document.querySelectorAll('.data-table-wrap').forEach(wrapper => {
       const table = wrapper.querySelector('table');
       const headers = [...wrapper.querySelectorAll('thead th')].map(item => text(item));
@@ -177,7 +180,7 @@
   }
 
   function enhanceWeeklyOrders() {
-    if (!mobileQuery.matches) return;
+    if (!isMobileExperience()) return;
     document.querySelectorAll('.page-content > .page-stack').forEach(page => {
       const title = normalize(text(page.querySelector('.page-header h2')));
       if (title !== 'pedidos' && title !== 'pedido semanal') return;
@@ -188,7 +191,7 @@
   }
 
   function cleanupDesktop() {
-    if (mobileQuery.matches) return;
+    if (isMobileExperience()) return;
     document.querySelectorAll('.mobile-bottom-nav,.mobile-quick-order,.wr-mobile-actions').forEach(node => node.remove());
     document.body.classList.remove('mobile-modal-open');
     setMoreMode(false);
@@ -236,5 +239,7 @@
     enhance();
     new MutationObserver(enhance).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
   });
-  mobileQuery.addEventListener?.('change', enhance);
+  widthQuery.addEventListener?.('change', enhance);
+  touchQuery.addEventListener?.('change', enhance);
+  window.addEventListener('resize', enhance, { passive: true });
 })();
