@@ -1,4 +1,4 @@
-const CACHE_NAME = 'queijos-wr-v4-202608061915';
+const CACHE_NAME = 'queijos-wr-v5-202608062022';
 const APP_SHELL = [
   '/',
   '/manifest.webmanifest',
@@ -6,10 +6,11 @@ const APP_SHELL = [
   '/brand/logo-simbolo.webp',
   '/install-app.css',
   '/install-app.js',
-  '/mobile-stage-3.js?v=202608061402',
+  '/mobile-stage-3.js?v=202608062022',
   '/mobile-final-fixes.css?v=202608061402',
   '/mobile-bar-overlap-fix.css?v=202608061915',
-  '/mobile-bar-overlap-fix.js?v=202608061915'
+  '/mobile-bar-overlap-fix.js?v=202608061915',
+  '/mobile-top-actions.css?v=202608062022'
 ];
 
 self.addEventListener('install', event => {
