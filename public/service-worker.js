@@ -1,4 +1,4 @@
-const CACHE_NAME = 'queijos-wr-v3-202608061402';
+const CACHE_NAME = 'queijos-wr-v4-202608061915';
 const APP_SHELL = [
   '/',
   '/manifest.webmanifest',
@@ -7,7 +7,9 @@ const APP_SHELL = [
   '/install-app.css',
   '/install-app.js',
   '/mobile-stage-3.js?v=202608061402',
-  '/mobile-final-fixes.css?v=202608061402'
+  '/mobile-final-fixes.css?v=202608061402',
+  '/mobile-bar-overlap-fix.css?v=202608061915',
+  '/mobile-bar-overlap-fix.js?v=202608061915'
 ];
 
 self.addEventListener('install', event => {
