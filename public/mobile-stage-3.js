@@ -8,7 +8,6 @@
 
   const keys = ['dashboard', 'clientes', 'pedidos', 'entregas'];
   const navLabel = key => ({ dashboard: 'Início', clientes: 'Clientes', pedidos: 'Pedidos', entregas: 'Entregas' })[key] || key;
-  const iconFor = key => key;
   let moreRequested = false;
 
   const findSidebarButtons = () => [...document.querySelectorAll('.sidebar-nav button')];
@@ -60,20 +59,11 @@
     setTimeout(() => { moreRequested = false; }, 0);
   }
 
-  function openQuickOrder() {
-    const button = [...document.querySelectorAll('button')].find(item => /novo pedido/i.test(text(item)) && !item.classList.contains('mobile-quick-order'));
-    if (button) return button.click();
-    findSidebarButtonByKey('pedidos')?.click();
-    requestAnimationFrame(() => {
-      [...document.querySelectorAll('button')].find(item => /novo pedido/i.test(text(item)) && !item.classList.contains('mobile-quick-order'))?.click();
-    });
-  }
-
   function syncData() {
     const sync = document.querySelector('.topbar-actions .sync-btn');
     if (!sync || sync.disabled) return;
     sync.click();
-    const action = document.querySelector('#wr-mobile-actions .wr-mobile-sync');
+    const action = document.querySelector('.wr-mobile-more-sync');
     action?.classList.add('is-syncing');
     setTimeout(() => action?.classList.remove('is-syncing'), 900);
   }
@@ -83,31 +73,34 @@
     button?.click();
   }
 
-  function buildMobileActions() {
-    if (!isMobileExperience() || !document.querySelector('.app-shell')) return;
-    removeDuplicates('.wr-mobile-actions', 'wr-mobile-actions');
-    if (document.querySelector('#wr-mobile-actions')) return;
+  function buildMoreActions() {
+    if (!isMobileExperience()) return;
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+
+    removeDuplicates('.wr-mobile-more-actions', 'wr-mobile-more-actions');
+    if (document.querySelector('#wr-mobile-more-actions')) return;
 
     const actions = document.createElement('div');
-    actions.id = 'wr-mobile-actions';
-    actions.className = 'wr-mobile-actions';
-    actions.setAttribute('aria-label', 'Ações rápidas');
+    actions.id = 'wr-mobile-more-actions';
+    actions.className = 'wr-mobile-more-actions';
+    actions.setAttribute('aria-label', 'Ações do sistema');
     actions.innerHTML = `
-      <button type="button" class="wr-mobile-action wr-mobile-sync" aria-label="Sincronizar dados">
+      <button type="button" class="wr-mobile-more-sync" aria-label="Sincronizar dados">
         <i class="wr-system-icon wr-system-sync" aria-hidden="true"></i><span>Sincronizar</span>
       </button>
-      <button type="button" class="wr-mobile-action wr-mobile-exit" aria-label="Sair do sistema">
+      <button type="button" class="wr-mobile-more-exit" aria-label="Sair do sistema">
         <i class="wr-system-icon wr-system-exit" aria-hidden="true"></i><span>Sair</span>
       </button>`;
-    actions.querySelector('.wr-mobile-sync').addEventListener('click', syncData);
-    actions.querySelector('.wr-mobile-exit').addEventListener('click', logout);
-    document.querySelector('.topbar')?.insertAdjacentElement('afterend', actions);
+    actions.querySelector('.wr-mobile-more-sync').addEventListener('click', syncData);
+    actions.querySelector('.wr-mobile-more-exit').addEventListener('click', logout);
+    sidebar.appendChild(actions);
   }
 
   function buildBottomNav() {
     if (!isMobileExperience() || !document.querySelector('.app-shell')) return;
     removeDuplicates('.mobile-bottom-nav', 'wr-mobile-bottom-nav');
-    removeDuplicates('.mobile-quick-order', 'wr-mobile-quick-order');
+    document.querySelectorAll('.mobile-quick-order,.wr-mobile-actions').forEach(node => node.remove());
     if (document.querySelector('#wr-mobile-bottom-nav')) return;
 
     const nav = document.createElement('nav');
@@ -120,7 +113,7 @@
       const button = document.createElement('button');
       button.type = 'button';
       button.dataset.mobileTab = key;
-      button.innerHTML = `<span class="mobile-bottom-icon"><i class="wr-brand-icon wr-icon-${iconFor(key)}" aria-hidden="true"></i></span><span>${navLabel(key)}</span>`;
+      button.innerHTML = `<span class="mobile-bottom-icon"><i class="wr-brand-icon wr-icon-${key}" aria-hidden="true"></i></span><span>${navLabel(key)}</span>`;
       button.addEventListener('click', () => {
         setMoreMode(false);
         findSidebarButtonByKey(key)?.click();
@@ -135,14 +128,6 @@
     more.addEventListener('click', openMore);
     nav.appendChild(more);
     document.body.appendChild(nav);
-
-    const quick = document.createElement('button');
-    quick.id = 'wr-mobile-quick-order';
-    quick.type = 'button';
-    quick.className = 'mobile-quick-order';
-    quick.innerHTML = '<b>+</b><span>Novo pedido</span>';
-    quick.addEventListener('click', openQuickOrder);
-    document.body.appendChild(quick);
   }
 
   function syncBottomNav() {
@@ -154,8 +139,6 @@
       if (shouldActivate) button.setAttribute('aria-current', 'page');
       else button.removeAttribute('aria-current');
     });
-    const quick = document.querySelector('#wr-mobile-quick-order');
-    if (quick) quick.hidden = !findSidebarButtonByKey('pedidos');
   }
 
   function enhanceTables() {
@@ -192,7 +175,7 @@
 
   function cleanupDesktop() {
     if (isMobileExperience()) return;
-    document.querySelectorAll('.mobile-bottom-nav,.mobile-quick-order,.wr-mobile-actions').forEach(node => node.remove());
+    document.querySelectorAll('.mobile-bottom-nav,.mobile-quick-order,.wr-mobile-actions,.wr-mobile-more-actions').forEach(node => node.remove());
     document.body.classList.remove('mobile-modal-open');
     setMoreMode(false);
   }
@@ -224,8 +207,9 @@
     requestAnimationFrame(() => {
       scheduled = false;
       cleanupDesktop();
+      if (!isMobileExperience()) return;
       classifySidebarButtons();
-      buildMobileActions();
+      buildMoreActions();
       buildBottomNav();
       syncBottomNav();
       enhanceWeeklyOrders();
