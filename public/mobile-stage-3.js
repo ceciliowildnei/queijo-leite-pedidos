@@ -76,15 +76,20 @@
   function buildMoreActions() {
     if (!isMobileExperience()) return;
     const sidebar = document.querySelector('.sidebar');
-    if (!sidebar) return;
+    const sidebarNav = sidebar?.querySelector('.sidebar-nav');
+    if (!sidebar || !sidebarNav) return;
 
     removeDuplicates('.wr-mobile-more-actions', 'wr-mobile-more-actions');
-    if (document.querySelector('#wr-mobile-more-actions')) return;
+    const current = document.querySelector('#wr-mobile-more-actions');
+    if (current) {
+      if (current.nextElementSibling !== sidebarNav) sidebar.insertBefore(current, sidebarNav);
+      return;
+    }
 
     const actions = document.createElement('div');
     actions.id = 'wr-mobile-more-actions';
-    actions.className = 'wr-mobile-more-actions';
-    actions.setAttribute('aria-label', 'Ações do sistema');
+    actions.className = 'wr-mobile-more-actions wr-mobile-more-top-actions';
+    actions.setAttribute('aria-label', 'Ações rápidas do sistema');
     actions.innerHTML = `
       <button type="button" class="wr-mobile-more-sync" aria-label="Sincronizar dados">
         <i class="wr-system-icon wr-system-sync" aria-hidden="true"></i><span>Sincronizar</span>
@@ -94,7 +99,7 @@
       </button>`;
     actions.querySelector('.wr-mobile-more-sync').addEventListener('click', syncData);
     actions.querySelector('.wr-mobile-more-exit').addEventListener('click', logout);
-    sidebar.appendChild(actions);
+    sidebar.insertBefore(actions, sidebarNav);
   }
 
   function buildBottomNav() {
