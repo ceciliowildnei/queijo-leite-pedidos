@@ -1,0 +1,155 @@
+/* Correção dedicada da barra inferior em celulares e PWA. */
+@media (max-width: 900px) {
+  :root {
+    --wr-mobile-bar-height-stable: 72px;
+    --wr-mobile-bar-edge-gap: 14px;
+    --wr-mobile-visual-bottom-inset: 0px;
+  }
+
+  body > .mobile-bottom-nav:not(#wr-mobile-bottom-nav) {
+    display: none !important;
+  }
+
+  #wr-mobile-bottom-nav.mobile-bottom-nav {
+    box-sizing: border-box !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: calc(
+      var(--wr-mobile-bar-edge-gap) +
+      env(safe-area-inset-bottom) +
+      var(--wr-mobile-visual-bottom-inset)
+    ) !important;
+    width: calc(100vw - 24px) !important;
+    max-width: 620px !important;
+    height: var(--wr-mobile-bar-height-stable) !important;
+    min-height: var(--wr-mobile-bar-height-stable) !important;
+    margin-inline: auto !important;
+    padding: 6px 8px !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    overflow: hidden !important;
+    contain: layout paint;
+    isolation: isolate;
+  }
+
+  #wr-mobile-bottom-nav > button {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 58px !important;
+    min-height: 52px !important;
+    margin: 0 !important;
+    padding: 4px 2px !important;
+    overflow: hidden !important;
+  }
+
+  #wr-mobile-bottom-nav > button > span {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  #wr-mobile-bottom-nav .mobile-bottom-icon {
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    flex: 0 0 32px !important;
+  }
+
+  #wr-mobile-bottom-nav .mobile-bottom-icon .wr-brand-icon,
+  #wr-mobile-bottom-nav .mobile-bottom-icon .wr-system-icon {
+    width: 26px !important;
+    height: 26px !important;
+    max-width: 26px !important;
+    max-height: 26px !important;
+  }
+
+  #wr-mobile-bottom-nav > button > span:last-child {
+    display: block !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    text-align: center;
+    font-size: 9px !important;
+    line-height: 1.05 !important;
+  }
+
+  .app-shell,
+  .app-shell.sidebar-collapsed,
+  .page-content {
+    padding-bottom: calc(
+      var(--wr-mobile-bar-height-stable) +
+      var(--wr-mobile-bar-edge-gap) +
+      env(safe-area-inset-bottom) +
+      42px
+    ) !important;
+  }
+
+  html.wr-mobile-keyboard-open #wr-mobile-bottom-nav {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  body.mobile-modal-open #wr-mobile-bottom-nav,
+  body:has(.mobile-menu-open) #wr-mobile-bottom-nav {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  :root {
+    --wr-mobile-bar-height-stable: 60px;
+    --wr-mobile-bar-edge-gap: 8px;
+  }
+
+  #wr-mobile-bottom-nav.mobile-bottom-nav {
+    width: min(560px, calc(100vw - 32px)) !important;
+    max-width: calc(100vw - 32px) !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    padding: 4px 8px !important;
+    border-radius: 20px !important;
+  }
+
+  #wr-mobile-bottom-nav > button {
+    height: 50px !important;
+    min-height: 48px !important;
+    padding: 3px 2px !important;
+  }
+
+  #wr-mobile-bottom-nav .mobile-bottom-icon {
+    width: 30px !important;
+    min-width: 30px !important;
+    height: 27px !important;
+    min-height: 27px !important;
+    flex-basis: 27px !important;
+  }
+
+  #wr-mobile-bottom-nav .mobile-bottom-icon .wr-brand-icon,
+  #wr-mobile-bottom-nav .mobile-bottom-icon .wr-system-icon {
+    width: 23px !important;
+    height: 23px !important;
+    max-width: 23px !important;
+    max-height: 23px !important;
+  }
+
+  #wr-mobile-bottom-nav > button > span:last-child {
+    font-size: 8px !important;
+  }
+
+  .app-shell,
+  .app-shell.sidebar-collapsed,
+  .page-content {
+    padding-bottom: calc(
+      60px +
+      var(--wr-mobile-bar-edge-gap) +
+      env(safe-area-inset-bottom) +
+      30px
+    ) !important;
+  }
+}
