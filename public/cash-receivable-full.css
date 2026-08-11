@@ -1,0 +1,39 @@
+/* Queijos WR — caixa: contas a receber por extenso */
+#wr-financial-control .cash-table-grid,
+.financial-control-page .cash-table-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+#wr-financial-control .cash-table-grid > .cash-financial-panel,
+.financial-control-page .cash-table-grid > .panel {
+  width: 100%;
+  min-width: 0;
+}
+
+#wr-financial-control .cash-table-grid > .cash-financial-panel:first-child .cash-table-scroll table,
+.financial-control-page .cash-table-grid > .panel:first-child table {
+  width: 100%;
+  min-width: 100%;
+  table-layout: auto;
+}
+
+#wr-financial-control .cash-table-grid > .cash-financial-panel:first-child th,
+#wr-financial-control .cash-table-grid > .cash-financial-panel:first-child td,
+.financial-control-page .cash-table-grid > .panel:first-child th,
+.financial-control-page .cash-table-grid > .panel:first-child td {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+@media (max-width: 900px) {
+  #wr-financial-control .cash-table-grid,
+  .financial-control-page .cash-table-grid {
+    display: block;
+  }
+
+  #wr-financial-control .cash-table-grid > *,
+  .financial-control-page .cash-table-grid > * {
+    margin-bottom: 16px;
+  }
+}
