@@ -4,7 +4,7 @@ import path from 'node:path';
 const filePath = path.resolve('src/main.jsx');
 let source = fs.readFileSync(filePath, 'utf8');
 
-if (source.includes("eq('chave', 'clientes_recorrentes_semanais')")) {
+if (source.includes("eq('chave', 'clientes_semanais')")) {
   console.log('Repetição semanal de clientes já preparada.');
   process.exit(0);
 }
@@ -21,7 +21,7 @@ if (!source.includes(syncMarker)) throw new Error('Função de sincronização n
 source = source.replace(
   syncMarker,
   `  async function loadWeeklyClients() {
-    const response = await supabase.from('wr_config').select('valor').eq('chave', 'clientes_recorrentes_semanais').maybeSingle();
+    const response = await supabase.from('wr_config').select('valor').eq('chave', 'clientes_semanais').maybeSingle();
     if (response.error) {
       console.warn('Não foi possível sincronizar os clientes semanais:', response.error.message);
       return;
@@ -70,7 +70,7 @@ const saveEntityReplacement = `  async function saveEntity(type, object) {
           : currentIds.filter(value => value !== clientId);
         const configResponse = await supabase
           .from('wr_config')
-          .upsert([{ chave: 'clientes_recorrentes_semanais', valor: nextIds }]);
+          .upsert([{ chave: 'clientes_semanais', valor: nextIds }]);
         if (configResponse.error) {
           setError('Cliente salvo, mas não foi possível atualizar a repetição semanal: ' + configResponse.error.message);
         } else {
@@ -131,7 +131,7 @@ if (!source.includes(oldClientFields)) throw new Error('Campos do perfil do clie
 source = source.replace(oldClientFields, newClientFields);
 
 const requiredChecks = [
-  "clientes_recorrentes_semanais",
+  "clientes_semanais",
   'Repetir pedido semanalmente',
   'weeklyClientIds',
   '_repetir_semanalmente',
