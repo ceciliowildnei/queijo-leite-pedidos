@@ -1,4 +1,4 @@
-const CACHE_NAME = 'queijos-wr-v2';
+const CACHE_NAME = 'queijos-wr-v3-20260813';
 const APP_SHELL = ['/', '/manifest.webmanifest', '/brand/app-icon.svg', '/brand/app-icon-192.webp', '/install-pwa.css', '/install-pwa.js'];
 
 self.addEventListener('install', event => {
