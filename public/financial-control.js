@@ -2,7 +2,7 @@
   const SUPABASE_URL = 'https://ywwztahbqgiwervbwudg.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_er0Z1O0s1opKniqu3cYkGg_svVBvXRx';
   const headers = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
-  const state = { period: 'month', orders: [], outputs: [], selectedDate: '' };
+  const state = { period: 'month', orders: [], outputs: [], selectedDate: '', reviewFilter: 'open', paymentBusy: '', paymentMessage: '' };
 
   const normalize = value => String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
   const number = value => Number(value || 0);
@@ -42,6 +42,36 @@
     }
   }
 
+  async function setPaymentStatus(id, status) {
+    if (!id || state.paymentBusy) return;
+    const order = state.orders.find(item => String(item.id) === String(id));
+    if (!order) return;
+
+    state.paymentBusy = String(id);
+    state.paymentMessage = '';
+    render();
+
+    try {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/wr_pedidos?id=eq.${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        headers: { ...headers, Prefer: 'return=minimal' },
+        body: JSON.stringify({ status_pagamento: status, atualizado_em: new Date().toISOString() }),
+      });
+      if (!response.ok) throw new Error(`Não foi possível atualizar o pagamento (${response.status}).`);
+
+      state.orders = state.orders.map(item => String(item.id) === String(id) ? { ...item, status_pagamento: status, atualizado_em: new Date().toISOString() } : item);
+      state.paymentMessage = status === 'Pago'
+        ? `${order.cliente_nome || 'Cliente'} marcado como pago.`
+        : `${order.cliente_nome || 'Cliente'} mantido como não pago.`;
+    } catch (error) {
+      console.error(error);
+      state.paymentMessage = error.message || 'Erro ao atualizar o pagamento.';
+    } finally {
+      state.paymentBusy = '';
+      render();
+    }
+  }
+
   function selectedOperationalDate() {
     return document.querySelector('.date-control input[type="date"]')?.value || today();
   }
@@ -76,6 +106,26 @@
     }).join('');
   }
 
+  function reviewRows(items) {
+    if (!items.length) return '<div class="cash-review-empty">Nenhum valor nesta situação.</div>';
+    return items.map(order => {
+      const overdue = dateOnly(order.data_entrega) < today();
+      const partial = normalize(order.status_pagamento).includes('parcial');
+      const busy = state.paymentBusy === String(order.id);
+      return `<article class="cash-review-row ${overdue ? 'is-overdue' : ''}">
+        <div class="cash-review-main">
+          <div class="cash-review-client"><strong>${order.cliente_nome || 'Cliente'}</strong><span>${order.codigo || 'Sem código'} · ${order.produto_nome || 'Produto'}</span></div>
+          <div class="cash-review-meta"><span>${brDate(order.data_entrega)}</span><span>${order.forma_pagamento || 'Forma não informada'}</span><span class="cash-state ${overdue ? 'overdue' : 'pending'}">${partial ? 'Parcial' : overdue ? 'Em atraso' : 'Pendente'}</span></div>
+        </div>
+        <div class="cash-review-value"><span>Valor</span><strong>${money(order.total)}</strong></div>
+        <div class="cash-review-actions">
+          <button type="button" class="cash-review-btn unpaid" data-payment-status="Pendente" data-order-id="${order.id}" ${busy ? 'disabled' : ''}>${busy ? 'Salvando…' : 'Não pago'}</button>
+          <button type="button" class="cash-review-btn paid" data-payment-status="Pago" data-order-id="${order.id}" ${busy ? 'disabled' : ''}>${busy ? 'Salvando…' : '✓ Pago'}</button>
+        </div>
+      </article>`;
+    }).join('');
+  }
+
   function render() {
     const pageTitle = document.querySelector('.topbar-title h1')?.textContent?.trim();
     if (normalize(pageTitle) !== 'caixa') {
@@ -93,6 +143,13 @@
     const overdue = pending.filter(order => dateOnly(order.data_entrega) < today());
     const future = pending.filter(order => dateOnly(order.data_entrega) >= today());
 
+    const allOpen = active.filter(order => !isPaid(order));
+    const allOverdue = allOpen.filter(order => dateOnly(order.data_entrega) < today());
+    const allPending = allOpen.filter(order => dateOnly(order.data_entrega) >= today());
+    const reviewItems = (state.reviewFilter === 'overdue' ? allOverdue : state.reviewFilter === 'pending' ? allPending : allOpen)
+      .slice()
+      .sort((a, b) => String(a.data_entrega || '').localeCompare(String(b.data_entrega || '')) || String(a.cliente_nome || '').localeCompare(String(b.cliente_nome || ''), 'pt-BR'));
+
     const gross = sum(periodOrders, 'total');
     const received = sum(paid, 'total');
     const receivable = sum(pending, 'total');
@@ -100,7 +157,7 @@
     const balance = received - expenses;
 
     const allReceived = sum(active.filter(isPaid), 'total');
-    const allReceivable = sum(active.filter(order => !isPaid(order)), 'total');
+    const allReceivable = sum(allOpen, 'total');
     const allExpenses = sum(state.outputs, 'valor');
     const allBalance = allReceived - allExpenses;
     const receiptRate = gross > 0 ? Math.round((received / gross) * 100) : 0;
@@ -149,6 +206,16 @@
         <article class="cash-financial-panel"><header><h3>Situação dos recebimentos</h3><strong>${receiptRate}% recebido</strong></header><div class="cash-progress-track"><span style="width:${Math.min(receiptRate, 100)}%"></span></div><div class="cash-status-list"><div><span>Recebidos</span><strong>${paid.length}</strong><small>${money(received)}</small></div><div><span>Pendentes</span><strong>${pending.length}</strong><small>${money(receivable)}</small></div><div class="${overdue.length ? 'attention' : ''}"><span>Em atraso</span><strong>${overdue.length}</strong><small>${money(sum(overdue, 'total'))}</small></div><div><span>A vencer</span><strong>${future.length}</strong><small>${money(sum(future, 'total'))}</small></div></div></article>
         <article class="cash-financial-panel"><header><h3>Entradas por forma de pagamento</h3></header><div class="cash-payment-list">${payments.length ? payments.map(([name, item]) => `<div><span>${name}</span><small>${item.count} pagamento(s)</small><strong>${money(item.value)}</strong></div>`).join('') : '<p class="cash-financial-empty">Nenhuma entrada confirmada.</p>'}</div></article>
       </div>
+      <article class="cash-financial-panel cash-payment-review">
+        <header class="cash-review-header"><div><h3>Conferência de pagamentos</h3><p>Confira os valores em aberto e marque cada pedido como pago ou não pago.</p></div><strong>${money(sum(reviewItems, 'total'))}</strong></header>
+        <div class="cash-review-summary">
+          <button type="button" data-review-filter="open" class="cash-review-filter ${state.reviewFilter === 'open' ? 'active' : ''}"><span>Em aberto</span><strong>${allOpen.length}</strong><small>${money(sum(allOpen, 'total'))}</small></button>
+          <button type="button" data-review-filter="overdue" class="cash-review-filter overdue ${state.reviewFilter === 'overdue' ? 'active' : ''}"><span>Em atraso</span><strong>${allOverdue.length}</strong><small>${money(sum(allOverdue, 'total'))}</small></button>
+          <button type="button" data-review-filter="pending" class="cash-review-filter pending ${state.reviewFilter === 'pending' ? 'active' : ''}"><span>Pendentes</span><strong>${allPending.length}</strong><small>${money(sum(allPending, 'total'))}</small></button>
+        </div>
+        ${state.paymentMessage ? `<div class="cash-review-message">${state.paymentMessage}</div>` : ''}
+        <div class="cash-review-list">${reviewRows(reviewItems)}</div>
+      </article>
       <div class="cash-table-grid">
         <article class="cash-financial-panel"><header><h3>Contas a receber</h3></header><div class="cash-table-scroll"><table><thead><tr><th>Data</th><th>Cliente</th><th>Pedido</th><th>Forma</th><th>Situação</th><th>Valor</th></tr></thead><tbody>${renderTableRows(pending, 'pending')}</tbody></table></div></article>
         <article class="cash-financial-panel"><header><h3>Saídas registradas</h3></header><div class="cash-table-scroll"><table><thead><tr><th>Data</th><th>Descrição</th><th>Tipo</th><th>Valor</th></tr></thead><tbody>${renderTableRows(periodOutputs, 'outputs')}</tbody></table></div></article>
@@ -157,6 +224,18 @@
     root.querySelectorAll('[data-period]').forEach(button => button.addEventListener('click', () => {
       state.period = button.dataset.period;
       render();
+    }));
+    root.querySelectorAll('[data-review-filter]').forEach(button => button.addEventListener('click', () => {
+      state.reviewFilter = button.dataset.reviewFilter;
+      state.paymentMessage = '';
+      render();
+    }));
+    root.querySelectorAll('[data-payment-status]').forEach(button => button.addEventListener('click', () => {
+      const id = button.dataset.orderId;
+      const requested = button.dataset.paymentStatus;
+      const current = state.orders.find(item => String(item.id) === String(id));
+      const status = requested === 'Pendente' && normalize(current?.status_pagamento).includes('parcial') ? 'Parcial' : requested;
+      setPaymentStatus(id, status);
     }));
   }
 
