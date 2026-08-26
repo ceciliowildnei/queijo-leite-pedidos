@@ -1,28 +1,72 @@
 (() => {
   const mq = window.matchMedia('(max-width: 900px)');
-
   const isMobile = () => mq.matches;
-
-  function shell() { return document.querySelector('.app-shell'); }
+  const text = node => node?.textContent?.trim() || '';
 
   function closeDrawer() {
     document.body.classList.remove('wr-drawer-open');
-    document.documentElement.classList.remove('wr-mobile-more-open');
-    shell()?.classList.remove('mobile-menu-open');
-    document.querySelector('.sidebar-backdrop')?.classList.remove('show');
   }
 
   function openDrawer() {
     if (!isMobile()) return;
+    buildDrawer();
+    syncActiveState();
     document.body.classList.add('wr-drawer-open');
-    document.documentElement.classList.add('wr-mobile-more-open');
-    shell()?.classList.add('mobile-menu-open');
   }
 
-  function ensureDrawer() {
-    if (!isMobile() || !shell() || !document.querySelector('.sidebar')) return;
+  function originalNavButtons() {
+    return [...document.querySelectorAll('.sidebar-nav button')];
+  }
 
-    /* A navegação antiga não é mais necessária no celular. */
+  function syncData() {
+    const sync = document.querySelector('.topbar-actions .sync-btn');
+    if (sync && !sync.disabled) sync.click();
+  }
+
+  function logout() {
+    const button = [...document.querySelectorAll('.profile-menu button')]
+      .find(item => /sair/i.test(text(item)));
+    if (button) button.click();
+  }
+
+  function buildDrawerNav() {
+    const nav = document.getElementById('wr-mobile-drawer-nav');
+    if (!nav) return;
+    nav.innerHTML = '';
+
+    originalNavButtons().forEach((original, index) => {
+      const clone = document.createElement('button');
+      clone.type = 'button';
+      clone.dataset.wrOriginalIndex = String(index);
+      clone.className = original.classList.contains('active') ? 'active' : '';
+
+      const icon = original.querySelector('.wr-brand-icon, .wr-system-icon, img, svg');
+      if (icon) clone.appendChild(icon.cloneNode(true));
+
+      const label = document.createElement('span');
+      label.textContent = text(original.querySelector('.nav-label')) || text(original) || `Área ${index + 1}`;
+      clone.appendChild(label);
+
+      clone.addEventListener('click', () => {
+        const target = originalNavButtons()[Number(clone.dataset.wrOriginalIndex)];
+        target?.click();
+        closeDrawer();
+      });
+      nav.appendChild(clone);
+    });
+  }
+
+  function syncActiveState() {
+    const originals = originalNavButtons();
+    document.querySelectorAll('#wr-mobile-drawer-nav button').forEach(button => {
+      const original = originals[Number(button.dataset.wrOriginalIndex)];
+      button.classList.toggle('active', Boolean(original?.classList.contains('active')));
+    });
+  }
+
+  function buildDrawer() {
+    if (!isMobile() || !document.querySelector('.app-shell')) return;
+
     document.querySelectorAll('#wr-mobile-bottom-nav,.mobile-bottom-nav,.mobile-quick-order,.wr-mobile-actions').forEach(el => el.remove());
 
     if (!document.getElementById('wr-mobile-drawer-handle')) {
@@ -43,23 +87,37 @@
       document.body.appendChild(backdrop);
     }
 
-    const sidebar = document.querySelector('.sidebar');
-    if (sidebar && !document.getElementById('wr-mobile-drawer-close')) {
-      const close = document.createElement('button');
-      close.id = 'wr-mobile-drawer-close';
-      close.type = 'button';
-      close.setAttribute('aria-label', 'Fechar menu');
-      close.setAttribute('title', 'Fechar menu');
-      close.textContent = '×';
-      close.addEventListener('click', closeDrawer);
-      sidebar.appendChild(close);
+    if (!document.getElementById('wr-mobile-drawer-panel')) {
+      const panel = document.createElement('aside');
+      panel.id = 'wr-mobile-drawer-panel';
+      panel.setAttribute('aria-label', 'Menu principal');
+      panel.innerHTML = `
+        <div class="wr-mobile-drawer-head">
+          <div class="wr-mobile-drawer-brand">
+            <strong>Queijos WR</strong>
+            <span>Menu do sistema</span>
+          </div>
+          <button id="wr-mobile-drawer-close" type="button" aria-label="Fechar menu">×</button>
+        </div>
+        <nav id="wr-mobile-drawer-nav" aria-label="Áreas do sistema"></nav>
+        <div class="wr-mobile-drawer-actions">
+          <button type="button" id="wr-mobile-drawer-sync"><i class="wr-system-icon wr-system-sync" aria-hidden="true"></i><span>Sincronizar</span></button>
+          <button type="button" id="wr-mobile-drawer-exit"><i class="wr-system-icon wr-system-exit" aria-hidden="true"></i><span>Sair</span></button>
+        </div>`;
+      document.body.appendChild(panel);
+      panel.querySelector('#wr-mobile-drawer-close')?.addEventListener('click', closeDrawer);
+      panel.querySelector('#wr-mobile-drawer-sync')?.addEventListener('click', syncData);
+      panel.querySelector('#wr-mobile-drawer-exit')?.addEventListener('click', logout);
     }
+
+    buildDrawerNav();
+    syncActiveState();
   }
 
   function cleanupDesktop() {
     if (isMobile()) return;
     closeDrawer();
-    document.querySelectorAll('#wr-mobile-drawer-handle,#wr-mobile-drawer-backdrop,#wr-mobile-drawer-close').forEach(el => el.remove());
+    document.querySelectorAll('#wr-mobile-drawer-handle,#wr-mobile-drawer-backdrop,#wr-mobile-drawer-panel').forEach(el => el.remove());
   }
 
   let scheduled = false;
@@ -69,15 +127,10 @@
     requestAnimationFrame(() => {
       scheduled = false;
       cleanupDesktop();
-      ensureDrawer();
+      if (!isMobile()) return;
+      buildDrawer();
     });
   }
-
-  document.addEventListener('click', event => {
-    if (!isMobile()) return;
-    const navButton = event.target.closest('.sidebar-nav button');
-    if (navButton) setTimeout(closeDrawer, 0);
-  }, true);
 
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') closeDrawer();
@@ -85,7 +138,7 @@
 
   window.addEventListener('DOMContentLoaded', () => {
     refresh();
-    new MutationObserver(refresh).observe(document.body, { childList: true, subtree: true });
+    new MutationObserver(refresh).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
   });
   mq.addEventListener?.('change', refresh);
   window.addEventListener('resize', refresh, { passive: true });
