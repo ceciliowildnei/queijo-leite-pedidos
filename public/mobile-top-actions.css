@@ -1,19 +1,25 @@
-/* Ações Sincronizar e Sair no topo do menu mobile. */
+/* Ações Sincronizar e Sair somente dentro do menu Mais no mobile. */
 @media (max-width: 900px) {
   .sidebar {
     display: flex !important;
     flex-direction: column !important;
   }
 
+  /* Evita que Sincronizar/Sair flutuem sobre a navegação inferior. */
   .wr-mobile-more-actions.wr-mobile-more-top-actions {
+    display: none !important;
     order: -1 !important;
     width: calc(100% - 24px) !important;
     margin: calc(10px + env(safe-area-inset-top)) 12px 10px !important;
     padding: 0 !important;
-    display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 10px !important;
     flex: 0 0 auto !important;
+  }
+
+  .mobile-menu-open .sidebar .wr-mobile-more-actions.wr-mobile-more-top-actions,
+  html.wr-mobile-more-open .mobile-menu-open .sidebar .wr-mobile-more-actions.wr-mobile-more-top-actions {
+    display: grid !important;
   }
 
   .wr-mobile-more-actions.wr-mobile-more-top-actions button {
@@ -70,24 +76,40 @@
     white-space: nowrap !important;
   }
 
+  /* Barra inferior sempre legível e clicável quando o menu Mais estiver fechado. */
   #wr-mobile-bottom-nav.mobile-bottom-nav {
     grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    z-index: 999 !important;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    background: rgba(20, 78, 43, 0.98) !important;
   }
 
   #wr-mobile-bottom-nav > button {
     min-width: 0 !important;
+    min-height: 56px !important;
+    overflow: visible !important;
   }
 
   #wr-mobile-bottom-nav > button > span:last-child {
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
     white-space: nowrap !important;
     text-align: center !important;
     font-size: 10px !important;
     line-height: 1.1 !important;
+  }
+
+  body.mobile-modal-open #wr-mobile-bottom-nav,
+  .mobile-menu-open ~ #wr-mobile-bottom-nav,
+  body:has(.mobile-menu-open) #wr-mobile-bottom-nav {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 }
 
