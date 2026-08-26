@@ -1,14 +1,13 @@
-/* Menu lateral móvel Queijos WR - substitui a barra inferior por gaveta abrir/fechar */
+/* Gaveta lateral móvel independente — evita conflitos com a sidebar original */
 @media (max-width: 900px) {
-  :root {
-    --wr-mobile-page-bottom: calc(24px + env(safe-area-inset-bottom));
-  }
+  :root { --wr-mobile-page-bottom: calc(24px + env(safe-area-inset-bottom)); }
 
-  /* Remove definitivamente a navegação inferior que estava cobrindo conteúdo. */
   #wr-mobile-bottom-nav,
   .mobile-bottom-nav,
   .mobile-quick-order,
-  .wr-mobile-actions {
+  .wr-mobile-actions,
+  .sidebar-backdrop,
+  .mobile-menu-btn {
     display: none !important;
   }
 
@@ -21,33 +20,37 @@
     padding-bottom: var(--wr-mobile-page-bottom) !important;
   }
 
-  /* Aba lateral fixa para abrir o menu. */
+  /* A sidebar original permanece fora do fluxo no mobile. A gaveta abaixo usa clones dos atalhos. */
+  .sidebar {
+    display: none !important;
+  }
+
   #wr-mobile-drawer-handle {
     position: fixed !important;
     left: 0 !important;
-    top: 50% !important;
+    top: 52% !important;
     transform: translateY(-50%) !important;
-    z-index: 360 !important;
-    width: 46px !important;
-    height: 78px !important;
-    min-width: 46px !important;
-    min-height: 78px !important;
+    z-index: 520 !important;
+    width: 48px !important;
+    height: 82px !important;
+    min-width: 48px !important;
+    min-height: 82px !important;
     padding: 0 !important;
-    border: 1px solid rgba(239,199,95,.62) !important;
+    border: 1px solid rgba(239,199,95,.68) !important;
     border-left: 0 !important;
-    border-radius: 0 18px 18px 0 !important;
-    background: linear-gradient(180deg,#1a6338 0%,#11482a 100%) !important;
-    box-shadow: 6px 8px 24px rgba(0,0,0,.28) !important;
-    color: #f1cf70 !important;
+    border-radius: 0 19px 19px 0 !important;
+    background: linear-gradient(180deg,#1d6a3c 0%,#114729 100%) !important;
+    box-shadow: 7px 9px 26px rgba(0,0,0,.30) !important;
+    color: #f2cf69 !important;
     display: grid !important;
     place-items: center !important;
     touch-action: manipulation !important;
-    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: transparent !important;
   }
 
   #wr-mobile-drawer-handle::before {
     content: "☰";
-    font-size: 25px;
+    font-size: 27px;
     line-height: 1;
     font-weight: 900;
   }
@@ -58,98 +61,11 @@
     pointer-events: none !important;
   }
 
-  /* A gaveta usa a própria sidebar do sistema. */
-  .sidebar {
-    position: fixed !important;
-    inset: 0 auto 0 0 !important;
-    z-index: 390 !important;
-    width: min(84vw, 340px) !important;
-    max-width: 340px !important;
-    height: 100dvh !important;
-    max-height: 100dvh !important;
-    padding-top: env(safe-area-inset-top) !important;
-    padding-bottom: env(safe-area-inset-bottom) !important;
-    overflow: hidden !important;
-    transform: translateX(-105%) !important;
-    transition: transform .24s ease !important;
-    box-shadow: 18px 0 40px rgba(0,0,0,.36) !important;
-  }
-
-  .app-shell.mobile-menu-open .sidebar,
-  body.wr-drawer-open .sidebar {
-    transform: translateX(0) !important;
-  }
-
-  .sidebar-nav {
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    padding-bottom: 20px !important;
-  }
-
-  /* Na gaveta aparecem TODAS as áreas, não somente as principais. */
-  .sidebar-nav button,
-  html.wr-mobile-more-open .sidebar-nav button,
-  html.wr-mobile-more-open .sidebar-nav button[data-wr-mobile-primary="true"] {
-    display: flex !important;
-  }
-
-  .sidebar-nav button .nav-label {
-    display: inline !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  html.wr-mobile-more-open .sidebar-nav::before {
-    display: none !important;
-  }
-
-  /* Cabeçalho próprio da gaveta com botão fechar. */
-  #wr-mobile-drawer-close {
-    position: absolute !important;
-    top: calc(10px + env(safe-area-inset-top)) !important;
-    right: 10px !important;
-    z-index: 8 !important;
-    width: 44px !important;
-    height: 44px !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
-    padding: 0 !important;
-    border: 1px solid rgba(255,255,255,.18) !important;
-    border-radius: 14px !important;
-    background: rgba(0,0,0,.18) !important;
-    color: #fff !important;
-    display: grid !important;
-    place-items: center !important;
-    font-size: 25px !important;
-    font-weight: 800 !important;
-  }
-
-  /* Sincronizar e Sair ficam dentro da gaveta. */
-  .wr-mobile-more-actions.wr-mobile-more-top-actions,
-  #wr-mobile-more-actions {
-    display: grid !important;
-    width: calc(100% - 24px) !important;
-    margin: 64px 12px 10px !important;
-    padding: 0 !important;
-    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
-    gap: 9px !important;
-    flex: 0 0 auto !important;
-  }
-
-  #wr-mobile-more-actions button {
-    min-height: 46px !important;
-    font-size: 12px !important;
-  }
-
-  /* Fundo escuro clicável ao abrir. */
   #wr-mobile-drawer-backdrop {
     position: fixed !important;
     inset: 0 !important;
-    z-index: 380 !important;
-    background: rgba(0,0,0,.52) !important;
+    z-index: 530 !important;
+    background: rgba(2,12,7,.62) !important;
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
@@ -161,12 +77,166 @@
     visibility: visible !important;
     pointer-events: auto !important;
   }
+
+  #wr-mobile-drawer-panel {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    z-index: 540 !important;
+    width: min(86vw, 350px) !important;
+    max-width: 350px !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    padding: calc(14px + env(safe-area-inset-top)) 14px calc(14px + env(safe-area-inset-bottom)) !important;
+    border: 0 !important;
+    border-radius: 0 24px 24px 0 !important;
+    background: linear-gradient(180deg,#12492b 0%,#0d3822 100%) !important;
+    box-shadow: 18px 0 48px rgba(0,0,0,.42) !important;
+    overflow: hidden !important;
+    transform: translateX(-105%) !important;
+    transition: transform .24s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  body.wr-drawer-open #wr-mobile-drawer-panel {
+    transform: translateX(0) !important;
+  }
+
+  .wr-mobile-drawer-head {
+    flex: 0 0 auto !important;
+    min-height: 64px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    padding: 4px 2px 12px !important;
+    border-bottom: 1px solid rgba(255,255,255,.10) !important;
+  }
+
+  .wr-mobile-drawer-brand {
+    min-width: 0 !important;
+    color: #fff !important;
+  }
+
+  .wr-mobile-drawer-brand strong {
+    display: block !important;
+    font-size: 18px !important;
+    line-height: 1.1 !important;
+  }
+
+  .wr-mobile-drawer-brand span {
+    display: block !important;
+    margin-top: 4px !important;
+    color: rgba(255,255,255,.67) !important;
+    font-size: 11px !important;
+  }
+
+  #wr-mobile-drawer-close {
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+    border: 1px solid rgba(255,255,255,.16) !important;
+    border-radius: 14px !important;
+    background: rgba(255,255,255,.08) !important;
+    color: #fff !important;
+    display: grid !important;
+    place-items: center !important;
+    font-size: 25px !important;
+    line-height: 1 !important;
+  }
+
+  #wr-mobile-drawer-nav {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 12px 0 !important;
+    display: grid !important;
+    align-content: start !important;
+    gap: 7px !important;
+  }
+
+  #wr-mobile-drawer-nav button {
+    width: 100% !important;
+    min-height: 52px !important;
+    padding: 9px 12px !important;
+    border: 1px solid transparent !important;
+    border-radius: 15px !important;
+    background: transparent !important;
+    color: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 11px !important;
+    text-align: left !important;
+    font-size: 14px !important;
+    font-weight: 750 !important;
+  }
+
+  #wr-mobile-drawer-nav button.active {
+    border-color: rgba(239,199,95,.38) !important;
+    background: rgba(239,199,95,.13) !important;
+    color: #f4d77d !important;
+  }
+
+  #wr-mobile-drawer-nav button .wr-brand-icon,
+  #wr-mobile-drawer-nav button .wr-system-icon,
+  #wr-mobile-drawer-nav button img,
+  #wr-mobile-drawer-nav button svg {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    max-height: 28px !important;
+    object-fit: contain !important;
+  }
+
+  .wr-mobile-drawer-actions {
+    flex: 0 0 auto !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 9px !important;
+    padding-top: 10px !important;
+    border-top: 1px solid rgba(255,255,255,.10) !important;
+  }
+
+  .wr-mobile-drawer-actions button {
+    min-width: 0 !important;
+    min-height: 48px !important;
+    padding: 8px 10px !important;
+    border: 1px solid rgba(255,255,255,.14) !important;
+    border-radius: 14px !important;
+    background: rgba(255,255,255,.08) !important;
+    color: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+  }
+
+  body.wr-drawer-open {
+    overflow: hidden !important;
+    touch-action: none !important;
+  }
+
+  body.wr-drawer-open #wr-mobile-drawer-panel,
+  body.wr-drawer-open #wr-mobile-drawer-panel * {
+    touch-action: manipulation !important;
+  }
 }
 
 @media (min-width: 901px) {
   #wr-mobile-drawer-handle,
-  #wr-mobile-drawer-close,
-  #wr-mobile-drawer-backdrop {
+  #wr-mobile-drawer-backdrop,
+  #wr-mobile-drawer-panel {
     display: none !important;
   }
 }
