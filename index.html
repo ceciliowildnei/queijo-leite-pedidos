@@ -13,12 +13,10 @@
     <meta name="msapplication-TileImage" content="/brand/app-icon-mobile.jpg?v=20260804" />
     <link rel="manifest" href="/manifest.webmanifest?v=20260804" />
     <meta name="description" content="Queijos WR para gestão de clientes, pedidos, entregas e caixa." />
-
     <link rel="icon" type="image/svg+xml" href="/brand/app-icon.svg?v=20260804" />
     <link rel="icon" type="image/jpeg" sizes="192x192" href="/brand/app-icon-mobile.jpg?v=20260804" />
     <link rel="shortcut icon" href="/brand/app-icon-mobile.jpg?v=20260804" />
     <link rel="apple-touch-icon" sizes="180x180" href="/brand/app-icon-mobile.jpg?v=20260804" />
-
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:site_name" content="Queijos WR" />
@@ -29,7 +27,6 @@
     <meta name="twitter:title" content="Queijos WR" />
     <meta name="twitter:description" content="Gestão de clientes, pedidos, entregas e caixa da Queijos WR." />
     <meta name="twitter:image" content="https://ceciliowildnei-queijo-leite-pedidos.vercel.app/brand/app-icon-mobile.jpg?v=20260804" />
-
     <link rel="stylesheet" href="/wr-brand-icons.css" />
     <link rel="stylesheet" href="/wr-visible-icons.css" />
     <link rel="stylesheet" href="/login-branding.css" />
@@ -47,6 +44,7 @@
     <link rel="stylesheet" href="/product-card-icons.css?v=202608051408" />
     <link rel="stylesheet" href="/financial-control.css?v=20260823-1358" />
     <link rel="stylesheet" href="/cash-receivable-full.css?v=202608111713" />
+    <link rel="stylesheet" href="/receivables-by-client.css?v=202608262050" />
     <link rel="stylesheet" href="/install-app.css" />
     <link rel="stylesheet" href="/mobile-orientation.css" />
     <link rel="stylesheet" href="/mobile-final-fixes.css?v=202608061402" />
@@ -59,34 +57,11 @@
     <div id="root"></div>
     <script>
       (() => {
-        const replacements = [
-          [/Entrar no ERP/g, 'Entrar'],
-          [/ERP Queijos WR/g, 'Queijos WR'],
-          [/Queijos WR ERP/g, 'Queijos WR'],
-          [/ERP Gestão/g, 'Gestão']
-        ];
-        const removeErp = value => replacements.reduce((text, [pattern, replacement]) => text.replace(pattern, replacement), value);
-        const cleanNode = node => {
-          if (node.nodeType === Node.TEXT_NODE) {
-            const cleaned = removeErp(node.nodeValue || '');
-            if (cleaned !== node.nodeValue) node.nodeValue = cleaned;
-            return;
-          }
-          if (!(node instanceof Element)) return;
-          const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
-          let current;
-          while ((current = walker.nextNode())) cleanNode(current);
-        };
-        const observer = new MutationObserver(mutations => {
-          mutations.forEach(mutation => {
-            mutation.addedNodes.forEach(cleanNode);
-            if (mutation.type === 'characterData') cleanNode(mutation.target);
-          });
-        });
-        window.addEventListener('DOMContentLoaded', () => {
-          cleanNode(document.body);
-          observer.observe(document.body, { childList: true, subtree: true, characterData: true });
-        });
+        const replacements = [[/Entrar no ERP/g,'Entrar'],[/ERP Queijos WR/g,'Queijos WR'],[/Queijos WR ERP/g,'Queijos WR'],[/ERP Gestão/g,'Gestão']];
+        const removeErp=value=>replacements.reduce((text,[pattern,replacement])=>text.replace(pattern,replacement),value);
+        const cleanNode=node=>{if(node.nodeType===Node.TEXT_NODE){const cleaned=removeErp(node.nodeValue||'');if(cleaned!==node.nodeValue)node.nodeValue=cleaned;return;}if(!(node instanceof Element))return;const walker=document.createTreeWalker(node,NodeFilter.SHOW_TEXT);let current;while((current=walker.nextNode()))cleanNode(current);};
+        const observer=new MutationObserver(mutations=>{mutations.forEach(mutation=>{mutation.addedNodes.forEach(cleanNode);if(mutation.type==='characterData')cleanNode(mutation.target);});});
+        window.addEventListener('DOMContentLoaded',()=>{cleanNode(document.body);observer.observe(document.body,{childList:true,subtree:true,characterData:true});});
       })();
     </script>
     <script defer src="/notification-center.js"></script>
@@ -100,6 +75,7 @@
     <script defer src="/simple-icons.js"></script>
     <script defer src="/product-card-icons.js?v=202608051408"></script>
     <script defer src="/financial-control.js?v=20260823-1358"></script>
+    <script defer src="/receivables-by-client.js?v=202608262050"></script>
     <script defer src="/install-app.js"></script>
     <script defer src="/mobile-bar-overlap-fix.js?v=202608061915"></script>
     <script defer src="/mobile-side-drawer.js?v=202608262035"></script>
