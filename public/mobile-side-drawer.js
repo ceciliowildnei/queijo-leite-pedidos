@@ -3,12 +3,22 @@
   const isMobile = () => mq.matches;
   const text = node => node?.textContent?.trim() || '';
 
+  function removeLegacyMobileUi() {
+    if (!isMobile()) return;
+    document.documentElement.classList.remove('wr-mobile-more-open');
+    document.querySelector('.app-shell')?.classList.remove('mobile-menu-open');
+    document.querySelectorAll(
+      '#wr-mobile-bottom-nav,.mobile-bottom-nav,.mobile-quick-order,.wr-mobile-actions,.wr-mobile-more-actions,.sidebar-backdrop,.mobile-menu-btn'
+    ).forEach(el => el.remove());
+  }
+
   function closeDrawer() {
     document.body.classList.remove('wr-drawer-open');
   }
 
   function openDrawer() {
     if (!isMobile()) return;
+    removeLegacyMobileUi();
     buildDrawer();
     syncActiveState();
     document.body.classList.add('wr-drawer-open');
@@ -66,8 +76,7 @@
 
   function buildDrawer() {
     if (!isMobile() || !document.querySelector('.app-shell')) return;
-
-    document.querySelectorAll('#wr-mobile-bottom-nav,.mobile-bottom-nav,.mobile-quick-order,.wr-mobile-actions').forEach(el => el.remove());
+    removeLegacyMobileUi();
 
     if (!document.getElementById('wr-mobile-drawer-handle')) {
       const handle = document.createElement('button');
@@ -128,6 +137,7 @@
       scheduled = false;
       cleanupDesktop();
       if (!isMobile()) return;
+      removeLegacyMobileUi();
       buildDrawer();
     });
   }
