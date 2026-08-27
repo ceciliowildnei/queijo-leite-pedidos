@@ -46,10 +46,15 @@
     return [...map.values()].sort((a,b) => a.cliente.localeCompare(b.cliente, 'pt-BR'));
   }
 
-  function clientCards() {
-    let clients = aggregateByClient();
-    if (searchTerm) clients = clients.filter(item => normalize(item.cliente).includes(normalize(searchTerm)));
-    if (!clients.length) return '<div class="wr-client-receivable-empty">Nenhum valor em aberto encontrado.</div>';
+  function filteredClients() {
+    const clients = aggregateByClient();
+    if (!searchTerm.trim()) return clients;
+    const term = normalize(searchTerm);
+    return clients.filter(item => normalize(item.cliente).includes(term));
+  }
+
+  function clientCards(clients) {
+    if (!clients.length) return '<div class="wr-client-receivable-empty">Nenhum valor em aberto encontrado para este cliente.</div>';
 
     return clients.map(item => {
       const firstDate = item.datas.length ? item.datas.slice().sort()[0] : '';
@@ -57,7 +62,7 @@
       return `<article class="wr-client-receivable-card">
         <div class="wr-client-receivable-head">
           <div><span>Cliente</span><strong>${item.cliente}</strong></div>
-          <strong class="wr-client-receivable-total">${money(item.total)}</strong>
+          <div><span>Valor em aberto</span><strong class="wr-client-receivable-total">${money(item.total)}</strong></div>
         </div>
         <div class="wr-client-receivable-meta">
           <span>${item.pedidos} pedido(s)</span>
@@ -65,7 +70,7 @@
           <span>${firstDate ? `Mais antigo: ${brDate(firstDate)}` : 'Sem data'}</span>
         </div>
         <details>
-          <summary>Ver pedidos</summary>
+          <summary>Ver pedidos em aberto</summary>
           <div class="wr-client-receivable-orders">
             ${details.map(order => `<div><span><strong>${order.codigo || 'Sem código'}</strong><small>${order.produto_nome || 'Produto'} · ${brDate(order.data_entrega)}</small></span><strong>${money(order.total)}</strong></div>`).join('')}
           </div>
@@ -75,20 +80,39 @@
   }
 
   function renderClientPanel(panel) {
-    const clients = aggregateByClient();
-    const total = clients.reduce((sum,item) => sum + item.total, 0);
+    const allClients = aggregateByClient();
+    const clients = filteredClients();
+    const allTotal = allClients.reduce((sum,item) => sum + item.total, 0);
+    const filteredTotal = clients.reduce((sum,item) => sum + item.total, 0);
+    const hasSearch = Boolean(searchTerm.trim());
+    const exact = hasSearch ? clients.find(item => normalize(item.cliente) === normalize(searchTerm)) : null;
+    const resultLabel = exact
+      ? `Valor em aberto de ${exact.cliente}`
+      : hasSearch
+        ? `Valor em aberto encontrado para “${searchTerm.trim()}”`
+        : 'Total a receber';
+
     panel.innerHTML = `
       <div class="wr-client-receivable-summary">
-        <div><span>Total a receber</span><strong>${money(total)}</strong></div>
-        <div><span>Clientes com pendência</span><strong>${clients.length}</strong></div>
+        <div><span>${resultLabel}</span><strong>${money(hasSearch ? filteredTotal : allTotal)}</strong></div>
+        <div><span>${hasSearch ? 'Cliente(s) encontrado(s)' : 'Clientes com pendência'}</span><strong>${clients.length}</strong></div>
       </div>
       <div class="wr-client-receivable-toolbar">
-        <input id="wr-client-receivable-search" type="search" placeholder="Buscar cliente..." value="${searchTerm.replace(/"/g,'&quot;')}" />
+        <input id="wr-client-receivable-search" type="search" placeholder="Digite o nome do cliente, ex.: Karol" value="${searchTerm.replace(/"/g,'&quot;')}" autocomplete="off" />
       </div>
-      <div class="wr-client-receivable-list">${clientCards()}</div>`;
-    panel.querySelector('#wr-client-receivable-search')?.addEventListener('input', event => {
+      <div class="wr-client-receivable-list">${clientCards(clients)}</div>`;
+
+    const input = panel.querySelector('#wr-client-receivable-search');
+    input?.addEventListener('input', event => {
       searchTerm = event.target.value;
       renderClientPanel(panel);
+      requestAnimationFrame(() => {
+        const nextInput = panel.querySelector('#wr-client-receivable-search');
+        if (nextInput) {
+          nextInput.focus();
+          nextInput.setSelectionRange(nextInput.value.length, nextInput.value.length);
+        }
+      });
     });
   }
 
