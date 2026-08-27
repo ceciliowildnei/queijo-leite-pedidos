@@ -98,6 +98,8 @@
     transition: transform .24s ease !important;
     display: flex !important;
     flex-direction: column !important;
+    overscroll-behavior: contain !important;
+    touch-action: pan-y !important;
   }
 
   body.wr-drawer-open #wr-mobile-drawer-panel {
@@ -113,6 +115,8 @@
     gap: 12px !important;
     padding: 4px 2px 12px !important;
     border-bottom: 1px solid rgba(255,255,255,.10) !important;
+    position: relative !important;
+    z-index: 2 !important;
   }
 
   .wr-mobile-drawer-brand {
@@ -148,18 +152,33 @@
     place-items: center !important;
     font-size: 25px !important;
     line-height: 1 !important;
+    touch-action: manipulation !important;
   }
 
+  /* Apenas a lista de módulos rola. Cabeçalho e ações ficam fora da área rolável. */
   #wr-mobile-drawer-nav {
-    flex: 1 1 auto !important;
+    flex: 1 1 0 !important;
     min-height: 0 !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch !important;
-    padding: 12px 0 !important;
+    overscroll-behavior-y: contain !important;
+    touch-action: pan-y !important;
+    padding: 12px 2px 18px 0 !important;
     display: grid !important;
     align-content: start !important;
     gap: 7px !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(239,199,95,.45) transparent !important;
+  }
+
+  #wr-mobile-drawer-nav::-webkit-scrollbar {
+    width: 4px !important;
+  }
+
+  #wr-mobile-drawer-nav::-webkit-scrollbar-thumb {
+    background: rgba(239,199,95,.45) !important;
+    border-radius: 999px !important;
   }
 
   #wr-mobile-drawer-nav button {
@@ -177,6 +196,8 @@
     text-align: left !important;
     font-size: 14px !important;
     font-weight: 750 !important;
+    flex: 0 0 auto !important;
+    touch-action: manipulation !important;
   }
 
   #wr-mobile-drawer-nav button.active {
@@ -195,6 +216,7 @@
     max-width: 28px !important;
     max-height: 28px !important;
     object-fit: contain !important;
+    flex: 0 0 28px !important;
   }
 
   .wr-mobile-drawer-actions {
@@ -203,7 +225,11 @@
     grid-template-columns: 1fr 1fr !important;
     gap: 9px !important;
     padding-top: 10px !important;
+    margin-top: 2px !important;
     border-top: 1px solid rgba(255,255,255,.10) !important;
+    background: linear-gradient(180deg,rgba(13,56,34,.92),#0d3822 28%) !important;
+    position: relative !important;
+    z-index: 3 !important;
   }
 
   .wr-mobile-drawer-actions button {
@@ -220,19 +246,21 @@
     gap: 7px !important;
     font-size: 12px !important;
     font-weight: 800 !important;
+    touch-action: manipulation !important;
   }
 
+  /* Bloqueia somente a página de fundo; a gaveta continua rolável verticalmente. */
   body.wr-drawer-open {
     overflow: hidden !important;
-    touch-action: none !important;
   }
 
-  body.wr-drawer-open #wr-mobile-drawer-panel,
-  body.wr-drawer-open #wr-mobile-drawer-panel * {
-    touch-action: manipulation !important;
+  body.wr-drawer-open #wr-mobile-drawer-nav {
+    overflow-y: auto !important;
+    touch-action: pan-y !important;
   }
 }
 
+/* Desktop permanece exatamente com a navegação original do sistema. */
 @media (min-width: 901px) {
   #wr-mobile-drawer-handle,
   #wr-mobile-drawer-backdrop,
