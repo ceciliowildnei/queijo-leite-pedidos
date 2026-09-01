@@ -4,7 +4,7 @@ import {
   getActiveProducts, getClientByPhone, getLastClientOrders, isoTodaySaoPaulo,
   nextFriday, normalizePhone, normalizeText, parseOrderText, publicError,
   sendText, whatsappOrderCode,
-} from '../lib/wr-whatsapp';
+} from '../lib/wr-whatsapp.js';
 
 declare const process: { env: Record<string, string | undefined> };
 
