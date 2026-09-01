@@ -1,4 +1,3 @@
-import crypto from 'node:crypto';
 import {
   addressOf, configGet, configSet, dbGet, dbInsert, formatConfirmation,
   getActiveProducts, getClientByPhone, getLastClientOrders, isoTodaySaoPaulo,
@@ -8,14 +7,16 @@ import {
 
 declare const process: { env: Record<string, string | undefined> };
 
-function verifySignature(request: Request, rawBody: string) {
+async function verifySignature(request: Request, rawBody: string) {
   const appSecret = process.env.META_APP_SECRET;
   if (!appSecret) return false;
   const signature = request.headers.get('x-hub-signature-256') || '';
   if (!signature.startsWith('sha256=')) return false;
-  const expected = `sha256=${crypto.createHmac('sha256', appSecret).update(rawBody).digest('hex')}`;
-  if (signature.length !== expected.length) return false;
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', encoder.encode(appSecret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const digest = await crypto.subtle.sign('HMAC', key, encoder.encode(rawBody));
+  const expected = `sha256=${Array.from(new Uint8Array(digest)).map(byte => byte.toString(16).padStart(2, '0')).join('')}`;
+  return signature.toLowerCase() === expected;
 }
 
 function firstInboundMessage(payload: any) {
@@ -138,7 +139,7 @@ export function GET(request: Request) {
 
 export async function POST(request: Request) {
   const rawBody = await request.text();
-  if (!verifySignature(request, rawBody)) return new Response('Invalid signature', { status: 401 });
+  if (!(await verifySignature(request, rawBody))) return new Response('Invalid signature', { status: 401 });
 
   let payload: any;
   try { payload = JSON.parse(rawBody || '{}'); } catch { return new Response('Invalid JSON', { status: 400 }); }
