@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "node scripts/prepare-brand-assets.mjs && node scripts/prepare-pwa.mjs && node scripts/prepare-visible-text.mjs && node scripts/prepare-final-brand.mjs && node scripts/prepare-collaborator-deliveries.mjs && node scripts/prepare-client-weekly-repeat.mjs && node scripts/prepare-financial-control-v2.mjs && node scripts/prepare-friday-dates-client-sort.mjs && node scripts/prepare-whatsapp-optin.mjs && node scripts/prepare-order-safety.mjs && node scripts/prepare-contact-import.mjs && node scripts/prepare-contact-selection.mjs && node scripts/prepare-contact-cleanup.mjs && vite build",
+    "build": "node scripts/prepare-brand-assets.mjs && node scripts/prepare-pwa.mjs && node scripts/prepare-visible-text.mjs && node scripts/prepare-final-brand.mjs && node scripts/prepare-collaborator-deliveries.mjs && node scripts/prepare-client-weekly-repeat.mjs && node scripts/prepare-financial-control-v2.mjs && node scripts/prepare-friday-dates-client-sort.mjs && node scripts/prepare-whatsapp-optin.mjs && node scripts/prepare-order-safety.mjs && node scripts/prepare-contact-import.mjs && node scripts/prepare-contact-selection.mjs && node scripts/prepare-contact-cleanup.mjs && node scripts/prepare-contact-merge-button.mjs && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
