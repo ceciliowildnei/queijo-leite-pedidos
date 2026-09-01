@@ -2,7 +2,7 @@ import {
   configGet, configSet, getClients, getLastClientOrders, isoTodaySaoPaulo,
   localHourSaoPaulo, localWeekdaySaoPaulo, nextFriday, normalizePhone,
   publicError, sendWeeklyTemplate, weekKey,
-} from './_wr-whatsapp';
+} from '../lib/wr-whatsapp';
 
 declare const process: { env: Record<string, string | undefined> };
 
