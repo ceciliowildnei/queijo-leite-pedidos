@@ -34,10 +34,7 @@ function previousLogicalOrder(rows: any[]) {
   };
 }
 
-export default async function handler(request: Request) {
-  if (request.method !== 'POST' && request.method !== 'GET') {
-    return Response.json({ ok: false, error: 'Método não permitido.' }, { status: 405 });
-  }
+async function run(request: Request) {
   if (!authorized(request)) {
     return Response.json({ ok: false, error: 'Não autorizado.' }, { status: 401 });
   }
@@ -111,4 +108,12 @@ export default async function handler(request: Request) {
   } catch (error) {
     return Response.json({ ok: false, error: publicError(error) }, { status: 500 });
   }
+}
+
+export function GET(request: Request) {
+  return run(request);
+}
+
+export function POST(request: Request) {
+  return run(request);
 }
