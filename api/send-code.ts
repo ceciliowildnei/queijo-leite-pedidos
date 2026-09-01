@@ -2,6 +2,7 @@ declare const process: {
   env: {
     META_WHATSAPP_TOKEN?: string;
     META_WHATSAPP_PHONE_NUMBER_ID?: string;
+    META_GRAPH_API_VERSION?: string;
   };
 };
 
@@ -14,6 +15,7 @@ export default async function handler(req: any, res: any) {
     const { phone, code } = req.body || {};
     const token = process.env.META_WHATSAPP_TOKEN;
     const phoneNumberId = process.env.META_WHATSAPP_PHONE_NUMBER_ID;
+    const graphVersion = process.env.META_GRAPH_API_VERSION || 'v26.0';
 
     if (!phone || !code) {
       return res.status(400).json({ ok: false, error: 'Telefone e código são obrigatórios.' });
@@ -28,10 +30,9 @@ export default async function handler(req: any, res: any) {
 
     const cleanPhone = String(phone).replace(/\D/g, '');
     const to = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
-
     const message = `Seu código de acesso Queijos WR é: ${code}`;
 
-    const response = await fetch(`https://graph.facebook.com/v20.0/${phoneNumberId}/messages`, {
+    const response = await fetch(`https://graph.facebook.com/${graphVersion}/${phoneNumberId}/messages`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -48,11 +49,7 @@ export default async function handler(req: any, res: any) {
     const result = await response.json();
 
     if (!response.ok) {
-      return res.status(500).json({
-        ok: false,
-        error: 'Falha ao enviar pelo WhatsApp.',
-        details: result
-      });
+      return res.status(500).json({ ok: false, error: 'Falha ao enviar pelo WhatsApp.', details: result });
     }
 
     return res.status(200).json({ ok: true, result });
