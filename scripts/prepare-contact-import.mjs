@@ -12,7 +12,7 @@ if (source.includes('Importar contatos do celular')) {
 const updateOrderMarker = "  async function updateOrder(id, changes, detail = 'Status do pedido atualizado') {";
 if (!source.includes(updateOrderMarker)) throw new Error('Ponto de importação não encontrado.');
 
-const importFunction = `  async function importContacts(rows) {
+source = source.replace(updateOrderMarker, `  async function importContacts(rows) {
     setError('');
     const existingPhones = new Set(db.clientes.map(item => onlyDigits(item.telefone || '')).filter(Boolean));
     const seen = new Set();
@@ -30,8 +30,7 @@ const importFunction = `  async function importContacts(rows) {
     return { imported: payload.length };
   }
 
-`;
-source = source.replace(updateOrderMarker, importFunction + updateOrderMarker);
+${updateOrderMarker}`);
 
 source = source.replace(
   'setQuery, setSelectedDate, setModal, saveEntity, deleteEntity, updateOrder, getClientPhoto,',
@@ -113,15 +112,15 @@ const clientsPage = `function ClientsPage({ db, query, setQuery, setModal, delet
 
   return (
     <div className="page-stack">
-      <PageHeader title="Clientes" subtitle={\`${db.clientes.length} clientes cadastrados · ${weeklyClientIds.length} com repetição semanal · ${whatsappOptInClientIds.length} autorizados no WhatsApp.\`} actions={<><button className="btn btn-secondary" onClick={() => setImportOpen(value => !value)}>Importar contatos</button><button className="btn btn-primary" onClick={() => setModal({ type: 'entity', entity: 'clientes' })}>+ Novo cliente</button></>} />
-      {importOpen && <Panel title="Importar contatos do celular"><div className="page-stack"><p>Exporte seus contatos em CSV ou VCF. O sistema cruza pelo telefone antes de importar e não cria duplicados com o mesmo número.</p><label className="btn btn-secondary" style={{ width: 'fit-content' }}>Selecionar arquivo CSV/VCF<input type="file" accept=".csv,.vcf,text/csv,text/vcard" onChange={handleFile} style={{ display: 'none' }} /></label>{importMessage && <Alert>{importMessage}</Alert>}{analyzed.length > 0 && <><div className="metric-grid metric-grid-compact"><MiniMetric label="Lidos" value={analyzed.length} /><MiniMetric label="Já cadastrados" value={existingRows.length} /><MiniMetric label="Novos" value={newRows.length} /><MiniMetric label="Revisar nome" value={reviewRows.length} /></div><DataTable compact columns={['Contato', 'Telefone', 'Resultado', 'Cliente relacionado']} rows={analyzed.slice(0, 100).map(item => [item.nome, formatPhone(item.phone), <Status key={'s-'+item.index} value={item.status} />, item.existing?.nome || '—'])} empty="Nenhum contato." />{analyzed.length > 100 && <small>Mostrando os primeiros 100 contatos. Todos os novos válidos serão considerados na importação.</small>}<div><button className="btn btn-primary" disabled={!newRows.length || importing} onClick={confirmImport}>{importing ? 'Importando...' : \`Importar ${newRows.length} contato(s) novo(s)\`}</button></div></>}</div></Panel>}
+      <PageHeader title="Clientes" subtitle={db.clientes.length + ' clientes cadastrados · ' + weeklyClientIds.length + ' com repetição semanal · ' + whatsappOptInClientIds.length + ' autorizados no WhatsApp.'} actions={<><button className="btn btn-secondary" onClick={() => setImportOpen(value => !value)}>Importar contatos</button><button className="btn btn-primary" onClick={() => setModal({ type: 'entity', entity: 'clientes' })}>+ Novo cliente</button></>} />
+      {importOpen && <Panel title="Importar contatos do celular"><div className="page-stack"><p>Exporte seus contatos em CSV ou VCF. O sistema cruza pelo telefone antes de importar e não cria duplicados com o mesmo número.</p><label className="btn btn-secondary" style={{ width: 'fit-content' }}>Selecionar arquivo CSV/VCF<input type="file" accept=".csv,.vcf,text/csv,text/vcard" onChange={handleFile} style={{ display: 'none' }} /></label>{importMessage && <Alert>{importMessage}</Alert>}{analyzed.length > 0 && <><div className="metric-grid metric-grid-compact"><MiniMetric label="Lidos" value={analyzed.length} /><MiniMetric label="Já cadastrados" value={existingRows.length} /><MiniMetric label="Novos" value={newRows.length} /><MiniMetric label="Revisar nome" value={reviewRows.length} /></div><DataTable compact columns={['Contato', 'Telefone', 'Resultado', 'Cliente relacionado']} rows={analyzed.slice(0, 100).map(item => [item.nome, formatPhone(item.phone), <Status key={'s-'+item.index} value={item.status} />, item.existing?.nome || '—'])} empty="Nenhum contato." />{analyzed.length > 100 && <small>Mostrando os primeiros 100 contatos. Todos os novos válidos serão considerados na importação.</small>}<div><button className="btn btn-primary" disabled={!newRows.length || importing} onClick={confirmImport}>{importing ? 'Importando...' : 'Importar ' + newRows.length + ' contato(s) novo(s)'}</button></div></>}</div></Panel>}
       <Toolbar><SearchInput value={query} onChange={setQuery} placeholder="Buscar por nome, telefone, bairro..." /><select value={district} onChange={event => setDistrict(event.target.value)}><option value="todos">Todos os bairros</option>{districts.map(item => <option key={item}>{item}</option>)}</select><span className="result-count">{filtered.length} resultado(s)</span></Toolbar>
       <DataTable columns={['Cliente', 'Telefone', 'Bairro', 'Endereço', 'Observações', 'Semanal', 'WhatsApp', 'Ações']} rows={filtered.map(client => [
         <ClientCell key={client.id} client={client} photo={getClientPhoto(client)} savePhoto={saveClientPhoto} />,
         formatPhone(client.telefone), client.bairro || '—', addressOf(client) || '—', client.observacoes || '—',
         weeklyClientIds.map(String).includes(String(client.id)) ? <Status value="Semanal" /> : '—',
         whatsappOptInClientIds.map(String).includes(String(client.id)) ? <Status value="Autorizado" /> : '—',
-        <TableActions key={\`a-${client.id}\`}><button onClick={() => setModal({ type: 'client-history', client })}>Histórico</button><button onClick={() => setModal({ type: 'entity', entity: 'clientes', item: { ...client, repetir_semanalmente: weeklyClientIds.map(String).includes(String(client.id)), whatsapp_opt_in: whatsappOptInClientIds.map(String).includes(String(client.id)) } })}>Editar</button>{canDelete && <button className="danger-link" onClick={() => deleteEntity('clientes', client.id, client.nome)}>Excluir</button>}</TableActions>,
+        <TableActions key={'a-' + client.id}><button onClick={() => setModal({ type: 'client-history', client })}>Histórico</button><button onClick={() => setModal({ type: 'entity', entity: 'clientes', item: { ...client, repetir_semanalmente: weeklyClientIds.map(String).includes(String(client.id)), whatsapp_opt_in: whatsappOptInClientIds.map(String).includes(String(client.id)) } })}>Editar</button>{canDelete && <button className="danger-link" onClick={() => deleteEntity('clientes', client.id, client.nome)}>Excluir</button>}</TableActions>,
       ])} empty="Nenhum cliente encontrado." />
     </div>
   );
