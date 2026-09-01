@@ -24,12 +24,33 @@ function firstInboundMessage(payload: any) {
   const value = change?.value;
   const message = value?.messages?.[0];
   if (!message) return null;
+  const sender = normalizePhone(message.from);
+  const profile = (value?.contacts || []).find((item: any) => normalizePhone(item?.wa_id) === sender) || value?.contacts?.[0];
   return {
     id: message.id,
     from: message.from,
     type: message.type,
+    profileName: String(profile?.profile?.name || '').trim(),
     text: message.text?.body || message.button?.text || message.interactive?.button_reply?.title || '',
   };
+}
+
+async function ensureClientFromWhatsApp(message: any) {
+  const phone = normalizePhone(message.from);
+  let client = await getClientByPhone(phone);
+  if (client) return { client, created: false };
+
+  const safeProfileName = String(message.profileName || '').replace(/\s+/g, ' ').trim().slice(0, 120);
+  const fallbackName = `Contato WhatsApp ${phone.slice(-4) || 'novo'}`;
+  const rows = await dbInsert('wr_clientes', [{
+    nome: safeProfileName || fallbackName,
+    telefone: phone,
+    observacoes: `Captado automaticamente pelo WhatsApp em ${new Date().toISOString()}`,
+  }]);
+
+  client = rows?.[0] || await getClientByPhone(phone);
+  if (!client) throw new Error('Não foi possível cadastrar o novo contato do WhatsApp.');
+  return { client, created: true };
 }
 
 function logicalLastOrder(rows: any[]) {
@@ -128,12 +149,9 @@ export async function POST(request: Request) {
     if (!message.id || await alreadyProcessed(message.id)) return new Response('EVENT_RECEIVED', { status: 200 });
 
     const phone = normalizePhone(message.from);
-    const client = await getClientByPhone(phone);
-    if (!client) {
-      await markProcessed(message.id);
-      await sendText(message.from, 'Olá! Não encontrei este número no cadastro da Queijos WR. Fale conosco para atualizar seu WhatsApp antes de fazer o pedido.');
-      return new Response('EVENT_RECEIVED', { status: 200 });
-    }
+    const ensured = await ensureClientFromWhatsApp(message);
+    const client = ensured.client;
+    const wasCaptured = ensured.created;
 
     const text = normalizeText(message.text);
     const optOutIds = new Set((await configGet('whatsapp_opt_out_client_ids')) || []);
@@ -187,7 +205,7 @@ export async function POST(request: Request) {
       if (!suggestion) suggestion = logicalLastOrder(await getLastClientOrders(String(client.id), 20));
       if (!suggestion?.items?.length) {
         await markProcessed(message.id);
-        await sendText(message.from, 'Ainda não tenho um pedido anterior para repetir. Escreva seu pedido, por exemplo: *2 queijo grande e 3 litros de leite*.');
+        await sendText(message.from, `${wasCaptured ? 'Seu contato já foi cadastrado na Queijos WR. ' : ''}Ainda não tenho um pedido anterior para repetir. Escreva seu pedido, por exemplo: *2 queijo grande e 3 litros de leite*.`);
         return new Response('EVENT_RECEIVED', { status: 200 });
       }
       const draft = {
@@ -211,18 +229,18 @@ export async function POST(request: Request) {
         tipo_entrega: last?.tipo_entrega || 'Entrega',
         endereco: last?.endereco || addressOf(client),
         forma_pagamento: last?.forma_pagamento || 'Pix',
-        observacoes: '',
+        observacoes: wasCaptured ? 'Primeiro atendimento captado pelo WhatsApp' : '',
         delivery_date: campaign?.delivery_date || nextFriday(isoTodaySaoPaulo()),
         created_from_message_id: message.id,
       };
       await savePending(phone, draft);
       await markProcessed(message.id);
-      await sendText(message.from, formatConfirmation(items, draft.delivery_date));
+      await sendText(message.from, `${wasCaptured ? `Olá, ${client.nome}! Seu contato já foi cadastrado na Queijos WR.\n\n` : ''}${formatConfirmation(items, draft.delivery_date)}`);
       return new Response('EVENT_RECEIVED', { status: 200 });
     }
 
     await markProcessed(message.id);
-    await sendText(message.from, 'Posso anotar seu pedido por aqui. Escreva quantidade e produto, por exemplo: *1 queijo grande, 2 queijo pequeno e 3 litros de leite*. Se quiser repetir seu último pedido, responda *REPETIR*.');
+    await sendText(message.from, `${wasCaptured ? `Olá, ${client.nome}! Seu contato foi cadastrado automaticamente na Queijos WR.\n\n` : ''}Posso anotar seu pedido por aqui. Escreva quantidade e produto, por exemplo: *1 queijo grande, 2 queijo pequeno e 3 litros de leite*. Se quiser repetir seu último pedido, responda *REPETIR*.`);
     return new Response('EVENT_RECEIVED', { status: 200 });
   } catch (error) {
     console.error('WhatsApp webhook:', publicError(error));
