@@ -10,7 +10,7 @@ declare const process: { env: Record<string, string | undefined> };
 
 function verifySignature(request: Request, rawBody: string) {
   const appSecret = process.env.META_APP_SECRET;
-  if (!appSecret) return true;
+  if (!appSecret) return false;
   const signature = request.headers.get('x-hub-signature-256') || '';
   if (!signature.startsWith('sha256=')) return false;
   const expected = `sha256=${crypto.createHmac('sha256', appSecret).update(rawBody).digest('hex')}`;
@@ -104,20 +104,18 @@ async function registerOrder(client: any, pending: any, messageId: string) {
   return { duplicate: false, code, rows };
 }
 
-export default async function handler(request: Request) {
-  if (request.method === 'GET') {
-    const url = new URL(request.url);
-    const mode = url.searchParams.get('hub.mode');
-    const token = url.searchParams.get('hub.verify_token');
-    const challenge = url.searchParams.get('hub.challenge');
-    if (mode === 'subscribe' && token && token === process.env.META_WHATSAPP_VERIFY_TOKEN) {
-      return new Response(challenge || '', { status: 200 });
-    }
-    return new Response('Verification failed', { status: 403 });
+export function GET(request: Request) {
+  const url = new URL(request.url);
+  const mode = url.searchParams.get('hub.mode');
+  const token = url.searchParams.get('hub.verify_token');
+  const challenge = url.searchParams.get('hub.challenge');
+  if (mode === 'subscribe' && token && token === process.env.META_WHATSAPP_VERIFY_TOKEN) {
+    return new Response(challenge || '', { status: 200 });
   }
+  return new Response('Verification failed', { status: 403 });
+}
 
-  if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 });
-
+export async function POST(request: Request) {
   const rawBody = await request.text();
   if (!verifySignature(request, rawBody)) return new Response('Invalid signature', { status: 401 });
 
