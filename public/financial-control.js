@@ -183,7 +183,15 @@
       if (!header) page.prepend(root);
     }
 
-    root.innerHTML = `
+    let overview = root.querySelector('#wr-financial-overview');
+    if (!overview) {
+      overview = document.createElement('div');
+      overview.id = 'wr-financial-overview';
+      overview.className = 'wr-financial-overview';
+      root.appendChild(overview);
+    }
+
+    overview.innerHTML = `
       <div class="cash-overview-hero">
         <div class="cash-overview-primary"><span>Saldo geral disponível</span><strong class="${allBalance < 0 ? 'negative' : ''}">${money(allBalance)}</strong><small>Total recebido menos todas as saídas registradas.</small></div>
         <div class="cash-overview-breakdown">
@@ -265,7 +273,13 @@
   };
   window.addEventListener('DOMContentLoaded', () => {
     schedule();
-    new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, characterData: true });
+    new MutationObserver(mutations => {
+      const changedOutsideFinancialControl = mutations.some(mutation => {
+        const target = mutation.target instanceof Element ? mutation.target : mutation.target?.parentElement;
+        return !target?.closest?.('#wr-financial-control');
+      });
+      if (changedOutsideFinancialControl) schedule();
+    }).observe(document.body, { childList: true, subtree: true, characterData: true });
     document.addEventListener('change', event => {
       if (event.target.matches('.date-control input[type="date"]')) schedule();
     });
