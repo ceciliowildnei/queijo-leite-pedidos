@@ -1,3 +1,4 @@
+import { payments, sendPix } from '../lib/wr-mercado-pago.js';
 import {
   addressOf, configGet, configSet, dbGet, dbInsert, formatConfirmation,
   getActiveProducts, getClientByPhone, getLastClientOrders, isoTodaySaoPaulo,
@@ -154,6 +155,17 @@ export async function POST(request: Request) {
     const client = ensured.client;
     const wasCaptured = ensured.created;
 
+    const pixRequest = String(message.text || '').trim().match(/^pix\s+(\S+)\s+(\S+)$/i);
+    if (pixRequest) {
+      try {
+        await sendPix(pixRequest[1], client, pixRequest[2]);
+        await markProcessed(message.id);
+      } catch {
+        await sendText(message.from, 'Não consegui gerar esse Pix. Confira o código do pedido e o e-mail. Se o pedido foi alterado, já foi pago ou o Pix expirou, fale com a equipe.');
+      }
+      return new Response('EVENT_RECEIVED', { status: 200 });
+    }
+
     const text = normalizeText(message.text);
     const optOutIds = new Set((await configGet('whatsapp_opt_out_client_ids')) || []);
     const optInIds = new Set((await configGet('whatsapp_opt_in_client_ids')) || []);
@@ -194,7 +206,7 @@ export async function POST(request: Request) {
       await savePending(phone, null);
       if (!result.duplicate) {
         const total = result.rows.reduce((sum: number, row: any) => sum + Number(row.total || 0), 0);
-        await sendText(message.from, `Pedido ${result.code} confirmado! Entrega prevista para ${String(pending.delivery_date || '').split('-').reverse().join('/')}. Total: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}. Obrigado!`);
+        await sendText(message.from, `Pedido ${result.code} confirmado! Entrega prevista para ${String(pending.delivery_date || '').split('-').reverse().join('/')}. Total: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}. Obrigado!${payments.enabled() ? `\n\nPara gerar seu Pix, envie: PIX ${result.code} seu@email.com (substitua pelo seu e-mail).` : ''}`);
       }
       return new Response('EVENT_RECEIVED', { status: 200 });
     }
